@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
+import '../widgets/brand_logo.dart';
 import '../widgets/onboarding_step_indicator.dart';
 
 /// Screen 5: Onboarding - Welfare First
@@ -16,6 +17,8 @@ class OnboardingScreen3 extends StatelessWidget {
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        title: const BrandLogo(size: 36, borderRadius: 8),
+        centerTitle: false,
       ),
       body: SafeArea(
         child: Column(

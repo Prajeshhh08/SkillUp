@@ -1,54 +1,61 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 
-/// Clean, scalable vector brand logo widget for SkillUp.
+/// Official Brand Logo widget for SkillUp.
 class BrandLogo extends StatelessWidget {
   final double size;
+  final double? borderRadius;
   final bool isLightMode;
-  final bool showBadge;
+  final bool showShadow;
 
   const BrandLogo({
     super.key,
     this.size = 56,
+    this.borderRadius,
     this.isLightMode = false,
-    this.showBadge = true,
+    this.showShadow = true,
   });
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = isLightMode
-        ? Colors.white
-        : AppTheme.primaryContainer;
-    final iconColor = isLightMode
-        ? AppTheme.primaryEmerald
-        : AppTheme.primaryEmerald;
+    final effectiveRadius = borderRadius ?? (size * 0.25);
 
     return Container(
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: bgColor,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: (isLightMode ? Colors.black : AppTheme.primaryEmerald)
-                .withValues(alpha: 0.08),
-            blurRadius: size * 0.2,
-            offset: Offset(0, size * 0.05),
-          ),
-        ],
+        borderRadius: BorderRadius.circular(effectiveRadius),
+        boxShadow: showShadow
+            ? [
+                BoxShadow(
+                  color: AppTheme.primaryEmerald.withValues(alpha: 0.15),
+                  blurRadius: size * 0.2,
+                  offset: Offset(0, size * 0.06),
+                ),
+              ]
+            : [],
         border: Border.all(
           color: isLightMode
-              ? Colors.white.withValues(alpha: 0.2)
-              : AppTheme.borderColor.withValues(alpha: 0.6),
+              ? Colors.white.withValues(alpha: 0.3)
+              : AppTheme.borderColor.withValues(alpha: 0.8),
           width: 1.5,
         ),
       ),
-      child: Center(
-        child: Icon(
-          Icons.handshake_rounded,
-          size: size * 0.52,
-          color: iconColor,
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(effectiveRadius - 1.5),
+        child: Image.asset(
+          'assets/images/logo.png',
+          width: size,
+          height: size,
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) => Container(
+            color: AppTheme.primaryContainer,
+            child: Icon(
+              Icons.handshake_rounded,
+              size: size * 0.5,
+              color: AppTheme.primaryEmerald,
+            ),
+          ),
         ),
       ),
     );

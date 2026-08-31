@@ -92,7 +92,8 @@ class _SplashScreenState extends State<SplashScreen>
                       const Spacer(flex: 3),
                       // Brand Logo Hero
                       const BrandLogo(
-                        size: 96,
+                        size: 120,
+                        borderRadius: 24,
                         isLightMode: true,
                       ),
                       const SizedBox(height: 24),
