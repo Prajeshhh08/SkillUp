@@ -8,7 +8,12 @@ class CustomerHomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext c) {
-    return Scaffold(
+    return PopScope<void>(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) c.go('/role');
+      },
+      child: Scaffold(
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
@@ -86,7 +91,13 @@ class CustomerHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: DashboardNav(index: 0, onTap: (_) => {}),
+        bottomNavigationBar: DashboardNav(
+          index: 0,
+          onTap: (index) {
+            if (index == 1) c.push('/booking-history');
+          },
+        ),
+      ),
     );
   }
 }

@@ -40,7 +40,7 @@ class WorkerJoinScreen extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        primaryAction('Get Started', () => c.go('/worker-signup')),
+        primaryAction('Get Started', () => c.push('/worker-signup')),
       ],
     ),
   );

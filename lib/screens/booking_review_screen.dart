@@ -63,7 +63,10 @@ class BookingReviewScreen extends StatelessWidget {
               ),
               actions: [
                 TextButton(
-                  onPressed: () => c.go('/customer-home'),
+                  onPressed: () {
+                    Navigator.of(d).pop();
+                    c.push('/booking-address');
+                  },
                   child: const Text('Done'),
                 ),
               ],

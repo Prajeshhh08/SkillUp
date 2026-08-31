@@ -29,7 +29,7 @@ class ForgotPasswordScreen extends StatelessWidget {
           ),
         ),
         TextButton(
-          onPressed: () => context.go('/login'),
+          onPressed: () => context.pop(),
           child: const Text('Back to sign in'),
         ),
       ],

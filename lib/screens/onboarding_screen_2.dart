@@ -17,6 +17,10 @@ class OnboardingScreen2 extends StatelessWidget {
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         automaticallyImplyLeading: false,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded),
+          onPressed: () => context.pop(),
+        ),
         title: const BrandLogo(size: 36, borderRadius: 8),
         centerTitle: false,
         actions: [

@@ -43,7 +43,7 @@ class WorkerStatusScreen extends StatelessWidget {
           ),
         ),
         const Spacer(),
-        primaryAction('Edit profile', () => c.go('/worker-form')),
+        primaryAction('Edit profile', () => c.push('/worker-form')),
       ],
     ),
   );

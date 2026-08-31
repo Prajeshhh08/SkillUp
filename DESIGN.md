@@ -4,6 +4,7 @@
 - **Project Name:** SkillUp (Emerald Cooperative App Interface)
 - **Primary Stitch Project ID (Onboarding/Auth):** `3860065034183508668`
 - **Customer Discovery & Booking Stitch Project ID:** `14570061873123891247`
+- **Customer Fulfillment & Order Lifecycle Stitch Project ID:** `15166046803774944096`
 - **Primary Color:** Deep Emerald (`#145C4C`)
 - **Primary Fill / Container:** Mint Soft (`#E8F4F1`)
 - **Background:** Pure White (`#FFFFFF`)
@@ -58,35 +59,66 @@
 
 ---
 
+### 3. Customer Fulfillment & Order Lifecycle Flow (`Project ID: 15166046803774944096`)
+
+| # | Screen Name | Route Path | Stitch Screen ID | Description & Visual Details |
+|---|---|---|---|---|
+| 27 | Booking Address Selection | `/booking-address` | `518644b0f5b94fb995935f0cc7e77152` | Address selection list with saved addresses, landmark entry, and add-address trigger. |
+| 28 | Booking Confirmation | `/booking-confirmation` | `62b28d1d74664036bdd6292c5950e53f` | Confirmation indicator displaying Booking ID, pending status, and tracking CTA. |
+| 29 | Active Booking Tracking | `/active-booking` | `84d74326e88a4b459c0dc9e73c9da2bf` | Real-time tracking timeline, worker info card, call/chat actions, and cancel/reschedule actions. |
+| 30 | Cancel / Reschedule | `/cancel-reschedule` | `9344e079a0c346c3b41b392af623e093` | Reason selection, date/time rescheduling slots, and cancellation policy warning. |
+| 31 | Payment Checkout | `/payment-checkout` | `98b9aabb1dc34e5792ec6be94fa73d0d` | Checkout screen with payment method options (UPI, Card, NetBanking) and total payable amount. |
+| 32 | Invoice & Payment Success | `/invoice` | `a9027e7ae6764598b9d87ad66e5e1e0b` | Itemized invoice breakdown, cooperative/welfare contribution split, and download receipt option. |
+| 33 | Rating & Review | `/rating-review` | `b917350fe0ed46949d67f236037ad8ae` | Interactive star rating, quick feedback tags, review text area, and submit CTA. |
+| 34 | Booking History | `/booking-history` | `cb5e262de2a649e0b6ffd2c2797a158d` | Tabbed view (Active, Completed, Cancelled) with rebook and invoice view triggers. |
+| 35 | Rebook Service | `/rebook` | `489fc445467c43738c37ea599fdcc0d4` | Quick re-order view pre-filled with past service specs, allowing schedule and location updates. |
+| 36 | Service Address Setup | `/service-address` | `81d34665202a4db1af1550713f20635a` | Dedicated service location selector for recurring or specific booking needs. |
+| 37 | Order Details / Summary | `/order-summary` | `ebd1b81ca9ae4e0497af8ececee25e83` | High-level overview of active or completed order status with support actions. |
+
+---
+
 ## Complete Route Configuration (`lib/router/app_router.dart`)
 
 ```dart
 // Flow 1: Auth, Onboarding & Management
-'/login'               -> LoginScreen()
-'/terms'               -> TermsAndPrivacyScreen()
-'/home'                -> HomeScreen()
-'/worker-onboarding'   -> WorkerOnboardingScreen()
-'/worker-details'      -> WorkerDetailsScreen()
-'/worker-join'         -> WorkerJoinScreen()
-'/verification-pending'-> VerificationPendingScreen()
-'/otp'                 -> OtpScreen()
-'/customer-signup'     -> CustomerSignupScreen()
-'/worker-signup'       -> WorkerSignupScreen()
-'/worker-status'       -> WorkerStatusScreen()
-'/worker-form'         -> WorkerFormScreen()
-'/address'             -> AddressSetupScreen()
-'/forgot-password'     -> ForgotPasswordScreen()
-'/customer-home'       -> CustomerHomeScreen()
-'/terms-confirm'       -> TermsConfirmScreen()
+'/login'                -> LoginScreen()
+'/terms'                -> TermsAndPrivacyScreen()
+'/home'                 -> HomeScreen()
+'/worker-onboarding'    -> WorkerOnboardingScreen()
+'/worker-details'       -> WorkerDetailsScreen()
+'/worker-join'          -> WorkerJoinScreen()
+'/verification-pending' -> VerificationPendingScreen()
+'/otp'                  -> OtpScreen()
+'/customer-signup'      -> CustomerSignupScreen()
+'/worker-signup'        -> WorkerSignupScreen()
+'/worker-status'        -> WorkerStatusScreen()
+'/worker-form'          -> WorkerFormScreen()
+'/address'              -> AddressSetupScreen()
+'/forgot-password'      -> ForgotPasswordScreen()
+'/customer-home'        -> CustomerHomeScreen()
+'/terms-confirm'        -> TermsConfirmScreen()
 
 // Flow 2: Customer Discovery & Booking Journey
-'/categories'          -> CategoriesScreen()
-'/services'            -> ServiceListingScreen()
-'/service-details'     -> ServiceDetailsScreen()
-'/search'              -> SearchFilterScreen()
-'/nearby-workers'      -> NearbyWorkersScreen()
-'/map-matching'        -> MapMatchingScreen()
-'/worker-profile'      -> WorkerProfileScreen()
-'/emergency-booking'   -> EmergencyBookingScreen()
-'/booking-schedule'    -> BookingScheduleScreen()
-'/booking-review'      -> BookingReviewScreen()
+'/categories'           -> CategoriesScreen()
+'/services'             -> ServiceListingScreen()
+'/service-details'      -> ServiceDetailsScreen()
+'/search'               -> SearchFilterScreen()
+'/nearby-workers'       -> NearbyWorkersScreen()
+'/map-matching'         -> MapMatchingScreen()
+'/worker-profile'       -> WorkerProfileScreen()
+'/emergency-booking'    -> EmergencyBookingScreen()
+'/booking-schedule'     -> BookingScheduleScreen()
+'/booking-review'       -> BookingReviewScreen()
+
+// Flow 3: Customer Fulfillment & Order Lifecycle
+'/booking-address'      -> BookingAddressScreen()
+'/booking-confirmation' -> BookingConfirmationScreen()
+'/active-booking'       -> ActiveBookingTrackingScreen()
+'/cancel-reschedule'    -> CancelRescheduleScreen()
+'/payment-checkout'     -> PaymentCheckoutScreen()
+'/invoice'              -> InvoiceSuccessScreen()
+'/rating-review'        -> RatingReviewScreen()
+'/booking-history'      -> BookingHistoryScreen()
+'/rebook'               -> RebookScreen()
+'/service-address'      -> ServiceAddressScreen()
+'/order-summary'        -> OrderSummaryScreen()

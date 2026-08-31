@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../theme/app_theme.dart';
 import 'flow_widgets.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -40,7 +39,7 @@ class HomeScreen extends StatelessWidget {
             const Spacer(),
             primaryAction(
               'View verification status',
-              () => c.go('/worker-status'),
+              () => c.push('/worker-status'),
             ),
           ],
         ),

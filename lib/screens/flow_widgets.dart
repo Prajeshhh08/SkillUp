@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 import '../widgets/brand_logo.dart';
@@ -11,7 +12,14 @@ class FlowScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
-          leading: IconButton(icon: const Icon(Icons.arrow_back_rounded), onPressed: () => Navigator.of(context).maybePop()),
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back_rounded),
+            onPressed: () {
+              if (GoRouter.of(context).canPop()) {
+                context.pop();
+              }
+            },
+          ),
           title: const BrandLogo(size: 36, showShadow: false),
           actions: action == null ? null : [action!],
         ),

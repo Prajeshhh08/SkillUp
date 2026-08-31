@@ -33,6 +33,17 @@ import '../screens/worker_profile_screen.dart';
 import '../screens/emergency_booking_screen.dart';
 import '../screens/booking_schedule_screen.dart';
 import '../screens/booking_review_screen.dart';
+import '../screens/booking_address_screen.dart';
+import '../screens/booking_confirmation_screen.dart';
+import '../screens/active_booking_screen.dart';
+import '../screens/cancel_reschedule_screen.dart';
+import '../screens/payment_checkout_screen.dart';
+import '../screens/invoice_success_screen.dart';
+import '../screens/rating_review_screen.dart';
+import '../screens/booking_history_screen.dart';
+import '../screens/rebook_screen.dart';
+import '../screens/service_address_screen.dart';
+import '../screens/order_summary_screen.dart';
 
 CustomTransitionPage<void> _buildCustomTransitionPage({
   required BuildContext context,
@@ -158,5 +169,16 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/emergency-booking', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const EmergencyBookingScreen())),
     GoRoute(path: '/booking-schedule', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingScheduleScreen())),
     GoRoute(path: '/booking-review', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingReviewScreen())),
+    GoRoute(path: '/booking-address', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingAddressScreen())),
+    GoRoute(path: '/booking-confirmation', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingConfirmationScreen())),
+    GoRoute(path: '/active-booking', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ActiveBookingScreen())),
+    GoRoute(path: '/cancel-reschedule', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const CancelRescheduleScreen())),
+    GoRoute(path: '/payment-checkout', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const PaymentCheckoutScreen())),
+    GoRoute(path: '/invoice', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const InvoiceSuccessScreen())),
+    GoRoute(path: '/rating-review', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const RatingReviewScreen())),
+    GoRoute(path: '/booking-history', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingHistoryScreen())),
+    GoRoute(path: '/rebook', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const RebookScreen())),
+    GoRoute(path: '/service-address', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ServiceAddressScreen())),
+    GoRoute(path: '/order-summary', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const OrderSummaryScreen())),
   ],
 );
