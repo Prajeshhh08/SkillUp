@@ -1,2 +1,47 @@
-import 'package:flutter/material.dart'; import 'package:go_router/go_router.dart'; import '../theme/app_theme.dart'; import 'flow_widgets.dart';
-class WorkerJoinScreen extends StatelessWidget { const WorkerJoinScreen({super.key}); @override Widget build(BuildContext c)=>FlowScaffold(title:'Join SkillUp',child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[const Spacer(),Icon(Icons.groups_rounded,size:96,color:AppTheme.primaryEmerald),const SizedBox(height:28),flowTitle('Join the SkillUp Network','Build your reputation, receive local leads, and get paid reliably.'),...['Reach more nearby customers','Choose your own availability','Get secure payouts'].map((x)=>Padding(padding:const EdgeInsets.only(bottom:14),child:Row(children:[const Icon(Icons.check_circle_rounded,color:AppTheme.success),const SizedBox(width:12),Text(x)]))),const Spacer(),primaryAction('Get Started',()=>c.go('/worker-signup'))])); }
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../theme/app_theme.dart';
+import 'flow_widgets.dart';
+
+class WorkerJoinScreen extends StatelessWidget {
+  const WorkerJoinScreen({super.key});
+
+  @override
+  Widget build(BuildContext c) => FlowScaffold(
+    title: 'Join SkillUp',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        const Spacer(),
+        const Icon(
+          Icons.groups_rounded,
+          size: 96,
+          color: AppTheme.primaryEmerald,
+        ),
+        const SizedBox(height: 28),
+        flowTitle(
+          'Join the SkillUp Network',
+          'Build your reputation, receive local leads, and get paid reliably.',
+        ),
+        ...[
+          'Reach more nearby customers',
+          'Choose your own availability',
+          'Get secure payouts',
+        ].map(
+          (x) => Padding(
+            padding: const EdgeInsets.only(bottom: 14),
+            child: Row(
+              children: [
+                const Icon(Icons.check_circle_rounded, color: AppTheme.success),
+                const SizedBox(width: 12),
+                Text(x),
+              ],
+            ),
+          ),
+        ),
+        const Spacer(),
+        primaryAction('Get Started', () => c.go('/worker-signup')),
+      ],
+    ),
+  );
+}

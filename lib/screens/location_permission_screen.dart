@@ -152,7 +152,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
               const Spacer(flex: 2),
               // Action Button
               ElevatedButton(
-                onPressed: () => context.go('/role'),
+                onPressed: () => context.push('/role'),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: const [

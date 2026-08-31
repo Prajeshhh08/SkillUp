@@ -1,5 +1,80 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'flow_widgets.dart';
-class LoginScreen extends StatefulWidget { const LoginScreen({super.key}); @override State<LoginScreen> createState()=>_LoginScreenState(); }
-class _LoginScreenState extends State<LoginScreen> { int role=0; @override Widget build(BuildContext context)=>FlowScaffold(title:'Sign in', child: SingleChildScrollView(child: Column(crossAxisAlignment:CrossAxisAlignment.stretch, children:[flowTitle('Welcome back','Sign in to manage bookings or grow your service business.'), SegmentedButton<int>(segments:const [ButtonSegment(value:0,label:Text('Customer')),ButtonSegment(value:1,label:Text('Worker'))], selected:{role}, onSelectionChanged:(v)=>setState(()=>role=v.first)), const SizedBox(height:24), const TextField(key:Key('login-phone'), keyboardType:TextInputType.phone, decoration:InputDecoration(labelText:'Phone number',prefixIcon:Icon(Icons.phone_outlined))), const SizedBox(height:14), const TextField(obscureText:true, decoration:InputDecoration(labelText:'Password',prefixIcon:Icon(Icons.lock_outline))), Align(alignment:Alignment.centerRight,child:TextButton(onPressed:()=>context.push('/forgot-password'),child:const Text('Forgot Password?'))), const SizedBox(height:12), primaryAction('Sign In',()=>context.go(role==0?'/customer-home':'/home')), const SizedBox(height:16), Row(mainAxisAlignment:MainAxisAlignment.center,children:[const Text('New to SkillUp?'),TextButton(onPressed:()=>context.push(role==0?'/customer-signup':'/worker-signup'),child:const Text('Create Account'))])]))); }
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  int role = 0;
+
+  @override
+  Widget build(BuildContext context) => FlowScaffold(
+    title: 'Sign in',
+    child: SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          flowTitle(
+            'Welcome back',
+            'Sign in to manage bookings or grow your service business.',
+          ),
+          SegmentedButton<int>(
+            segments: const [
+              ButtonSegment(value: 0, label: Text('Customer')),
+              ButtonSegment(value: 1, label: Text('Worker')),
+            ],
+            selected: {role},
+            onSelectionChanged: (v) => setState(() => role = v.first),
+          ),
+          const SizedBox(height: 24),
+          const TextField(
+            key: Key('login-phone'),
+            keyboardType: TextInputType.phone,
+            decoration: InputDecoration(
+              labelText: 'Phone number',
+              prefixIcon: Icon(Icons.phone_outlined),
+            ),
+          ),
+          const SizedBox(height: 14),
+          const TextField(
+            obscureText: true,
+            decoration: InputDecoration(
+              labelText: 'Password',
+              prefixIcon: Icon(Icons.lock_outline),
+            ),
+          ),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TextButton(
+              onPressed: () => context.push('/forgot-password'),
+              child: const Text('Forgot Password?'),
+            ),
+          ),
+          const SizedBox(height: 12),
+          primaryAction(
+            'Sign In',
+            () => context.go(role == 0 ? '/customer-home' : '/home'),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('New to SkillUp?'),
+              TextButton(
+                onPressed: () => context.push(
+                  role == 0 ? '/customer-signup' : '/worker-signup',
+                ),
+                child: const Text('Create Account'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    ),
+  );
+}

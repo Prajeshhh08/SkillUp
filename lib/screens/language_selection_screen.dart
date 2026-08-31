@@ -224,7 +224,7 @@ class _LanguageSelectionScreenState extends State<LanguageSelectionScreen> {
               ),
               child: ElevatedButton(
                 onPressed: () {
-                  context.go('/onboarding-1');
+                  context.push('/onboarding-1');
                 },
                 child: const Text('Continue'),
               ),

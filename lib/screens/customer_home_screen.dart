@@ -20,8 +20,10 @@ class CustomerHomeScreen extends StatelessWidget {
                   'Find help for your home',
                   'Book trusted professionals near you.',
                 ),
-                const TextField(
-                  decoration: InputDecoration(
+          TextField(
+            onTap: () => c.push('/search'),
+            readOnly: true,
+            decoration: const InputDecoration(
                     hintText: 'What do you need help with?',
                     prefixIcon: Icon(Icons.search),
                   ),
@@ -47,18 +49,28 @@ class CustomerHomeScreen extends StatelessWidget {
                 const SizedBox(height: 26),
                 sectionLabel('Quick actions'),
                 AppCard(
-                  onTap: () => c.go('/terms-confirm'),
+            onTap: () => c.push('/categories'),
                   child: const ListTile(
                     contentPadding: EdgeInsets.zero,
                     leading: Icon(
                       Icons.add_home_work_rounded,
                       color: AppTheme.primaryEmerald,
                     ),
-                    title: Text('Book a professional'),
+              title: Text('Browse services'),
                     subtitle: Text('Tell us what you need help with'),
                   ),
                 ),
-                const SizedBox(height: 16),
+          const SizedBox(height: 16),
+          AppCard(
+            onTap: () => c.push('/emergency-booking'),
+            child: const ListTile(
+              contentPadding: EdgeInsets.zero,
+              leading: Icon(Icons.emergency_rounded, color: AppTheme.error),
+              title: Text('Emergency booking'),
+              subtitle: Text('Request urgent help now'),
+            ),
+          ),
+          const SizedBox(height: 16),
                 sectionLabel('Recently viewed'),
                 const AppCard(
                   child: ListTile(

@@ -107,7 +107,7 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: isRoleSelected
-                        ? () => context.go(
+                        ? () => context.push(
                               _selectedRole == 'customer'
                                   ? '/customer-signup'
                                   : '/worker-signup',

@@ -23,6 +23,16 @@ import '../screens/worker_form_screen.dart';
 import '../screens/forgot_password_screen.dart';
 import '../screens/customer_home_screen.dart';
 import '../screens/terms_confirm_screen.dart';
+import '../screens/categories_screen.dart';
+import '../screens/service_listing_screen.dart';
+import '../screens/service_details_screen.dart';
+import '../screens/search_filter_screen.dart';
+import '../screens/nearby_workers_screen.dart';
+import '../screens/map_matching_screen.dart';
+import '../screens/worker_profile_screen.dart';
+import '../screens/emergency_booking_screen.dart';
+import '../screens/booking_schedule_screen.dart';
+import '../screens/booking_review_screen.dart';
 
 CustomTransitionPage<void> _buildCustomTransitionPage({
   required BuildContext context,
@@ -138,5 +148,15 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/forgot-password', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ForgotPasswordScreen())),
     GoRoute(path: '/customer-home', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const CustomerHomeScreen())),
     GoRoute(path: '/terms-confirm', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const TermsConfirmScreen())),
+    GoRoute(path: '/categories', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const CategoriesScreen())),
+    GoRoute(path: '/services', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ServiceListingScreen())),
+    GoRoute(path: '/service-details', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ServiceDetailsScreen())),
+    GoRoute(path: '/search', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const SearchFilterScreen())),
+    GoRoute(path: '/nearby-workers', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const NearbyWorkersScreen())),
+    GoRoute(path: '/map-matching', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const MapMatchingScreen())),
+    GoRoute(path: '/worker-profile', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const WorkerProfileScreen())),
+    GoRoute(path: '/emergency-booking', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const EmergencyBookingScreen())),
+    GoRoute(path: '/booking-schedule', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingScheduleScreen())),
+    GoRoute(path: '/booking-review', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const BookingReviewScreen())),
   ],
 );

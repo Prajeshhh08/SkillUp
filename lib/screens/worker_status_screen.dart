@@ -1,2 +1,50 @@
-import 'package:flutter/material.dart'; import 'package:go_router/go_router.dart'; import '../theme/app_theme.dart'; import 'flow_widgets.dart';
-class WorkerStatusScreen extends StatelessWidget { const WorkerStatusScreen({super.key}); @override Widget build(BuildContext c)=>FlowScaffold(title:'Account status',child:Column(crossAxisAlignment:CrossAxisAlignment.stretch,children:[flowTitle('Verification status','Keep track of your account review and document checklist.'),const AppCard(child:Row(children:[Icon(Icons.pending_actions_rounded,color:Colors.orange),SizedBox(width:12),Text('Status: Pending review')])),const SizedBox(height:22),sectionLabel('Documents'),...['Identity verification','Bank account details','Professional profile'].map((x)=>ListTile(contentPadding:EdgeInsets.zero,leading:const Icon(Icons.check_circle_rounded,color:AppTheme.success),title:Text(x),trailing:const Text('Submitted'))),const Spacer(),primaryAction('Edit profile',()=>c.go('/worker-form'))])); }
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../theme/app_theme.dart';
+import 'flow_widgets.dart';
+
+class WorkerStatusScreen extends StatelessWidget {
+  const WorkerStatusScreen({super.key});
+
+  @override
+  Widget build(BuildContext c) => FlowScaffold(
+    title: 'Account status',
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        flowTitle(
+          'Verification status',
+          'Keep track of your account review and document checklist.',
+        ),
+        const AppCard(
+          child: Row(
+            children: [
+              Icon(Icons.pending_actions_rounded, color: Colors.orange),
+              SizedBox(width: 12),
+              Text('Status: Pending review'),
+            ],
+          ),
+        ),
+        const SizedBox(height: 22),
+        sectionLabel('Documents'),
+        ...[
+          'Identity verification',
+          'Bank account details',
+          'Professional profile',
+        ].map(
+          (x) => ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(
+              Icons.check_circle_rounded,
+              color: AppTheme.success,
+            ),
+            title: Text(x),
+            trailing: const Text('Submitted'),
+          ),
+        ),
+        const Spacer(),
+        primaryAction('Edit profile', () => c.go('/worker-form')),
+      ],
+    ),
+  );
+}

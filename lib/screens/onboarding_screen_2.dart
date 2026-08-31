@@ -184,7 +184,7 @@ class OnboardingScreen2 extends StatelessWidget {
                   const OnboardingStepIndicator(currentStep: 2),
                   const SizedBox(height: 20),
                   ElevatedButton(
-                    onPressed: () => context.go('/onboarding-3'),
+                    onPressed: () => context.push('/onboarding-3'),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: const [

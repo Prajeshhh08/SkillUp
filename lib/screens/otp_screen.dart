@@ -33,7 +33,7 @@ class OtpScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 22),
-          primaryAction('Verify', () => c.go('/terms?flow=$flow')),
+          primaryAction('Verify', () => c.push('/terms?flow=$flow')),
           TextButton(
             onPressed: () {},
             child: const Text('Resend code in 00:30'),
