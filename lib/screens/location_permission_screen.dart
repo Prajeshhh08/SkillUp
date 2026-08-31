@@ -4,8 +4,8 @@ import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_theme.dart';
 
 /// Screen 6: Location Permission
-/// Visual: Location pin hero icon, explanatory text regarding GPS access, primary "Allow Location Access" button, and secondary "Enter Location Manually" outlined button.
-/// Behavior: Both CTAs proceed to Screen 7 (/role).
+/// Visual: Location pin hero icon, explanatory text regarding GPS access, and primary "Allow Location Access" button.
+/// Behavior: Proceeds to Screen 7 (/role).
 class LocationPermissionScreen extends StatefulWidget {
   const LocationPermissionScreen({super.key});
 
@@ -45,7 +45,10 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
       backgroundColor: AppTheme.background,
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: AppTheme.textPrimary),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: AppTheme.textPrimary,
+          ),
           onPressed: () {
             if (context.canPop()) {
               context.pop();
@@ -94,7 +97,9 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
                         height: 140,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: AppTheme.primaryContainer.withValues(alpha: 0.5),
+                          color: AppTheme.primaryContainer.withValues(
+                            alpha: 0.5,
+                          ),
                         ),
                       ),
                       // Main Pin Card
@@ -145,26 +150,17 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
                 textAlign: TextAlign.center,
               ),
               const Spacer(flex: 2),
-              // Action Buttons
-              Column(
-                children: [
-                  ElevatedButton(
-                    onPressed: () => context.go('/role'),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
-                        Icon(Icons.my_location_rounded, size: 20),
-                        SizedBox(width: 8),
-                        Text('Allow Location Access'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  OutlinedButton(
-                    onPressed: () => context.go('/role'),
-                    child: const Text('Enter Location Manually'),
-                  ),
-                ],
+              // Action Button
+              ElevatedButton(
+                onPressed: () => context.go('/role'),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(Icons.my_location_rounded, size: 20),
+                    SizedBox(width: 8),
+                    Text('Allow Location Access'),
+                  ],
+                ),
               ),
               const SizedBox(height: 24),
             ],

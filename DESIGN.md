@@ -2,7 +2,7 @@
 
 ## Project Overview
 - **Project Name:** SkillUp (Emerald Cooperative App Interface)
-- **Stitch Project ID:** `3027768114125438284`
+- **Stitch Project ID:** `3860065034183508668`
 - **Primary Color:** Deep Emerald (`#145C4C`)
 - **Primary Fill / Container:** Mint Soft (`#E8F4F1`)
 - **Background:** Pure White (`#FFFFFF`)
@@ -17,25 +17,41 @@
 
 ## Screen Inventory & Visual Specs
 
-| Screen # | Screen Name | Route Path | Stitch Screen ID | Description & Visual Details |
+| # | Screen Name | Route Path | Stitch Screen ID | Description & Visual Details |
 |---|---|---|---|---|
-| 1 | Splash Screen | `/splash` | `3a838ae90df74df48974fa152de1a042` | Full Deep Emerald (`#145C4C`) background with centered SkillUp white logo, clean typography, and smooth loading indicator. Auto-advances after 2 seconds. |
-| 2 | Language Selection | `/language` | `209f9ff92c5e4953b22ab459d42957cb` | Top header with back button and brand logo, language selection cards (English, Tamil, Hindi, etc.) with active emerald borders and check indicators, and sticky primary Continue button. |
-| 3 | Onboarding - Verified Workers | `/onboarding-1` | `124436cb5c0b403f9d36378ebd56a0f2` | Step 1 of 3 indicator, verified shield hero icon in layered ambient card, title, value description, top Skip button (jumps to `/location`), Next CTA button. |
-| 4 | Onboarding - Fair Wages | `/onboarding-2` | `9b3322242ea047fd8876b49d64a48908` | Step 2 of 3 indicator, fair compensation & secure payments hero icon, title, value description, top Skip button, Next CTA button. |
-| 5 | Onboarding - Welfare First | `/onboarding-3` | `4e4981dc8c9c481c955656834168d0c8` | Step 3 of 3 indicator, healthcare & emergency support hero icon, title, value description, and primary "Get Started" CTA button. |
-| 6 | Location Permission | `/location` | `42b9c70e513d4535b7aa4328aa48cfa2` | Location pin hero with pulsing radar animation, explanatory copy, primary "Allow Location Access" button and secondary "Enter Location Manually" button. |
-| 7 | Role Selection | `/role` | `34617b20ce804eb3a52989f8bfeb8ca9` | Two interactive cards: "Customer" (I want to hire workers) and "Worker" (I am a worker) with active border and tint selection, and dynamic Continue CTA. |
-| 8 | Manual Address Setup | `/address` | `092f70038d06406d9d7d5fc27c56d448` | Search input, "Use current location" button, styled map preview card, Flat/Building, Street/Area, Landmark, and Pincode input fields, "Save as" tags (Home, Work, Other), and primary "Save & Finish Setup" CTA. |
+| 1 | Login / Authentication | `/login` | `14829376d7d04469b19ff7cf12606c4e` | Sign in screen with Role toggle (Customer/Worker), phone/email inputs, and action buttons. |
+| 2 | Terms & Privacy Policy | `/terms` | `daaf48ed285343cdbcedb586e17eee10` | Full terms of service text, privacy agreements, and acceptance action buttons. |
+| 3 | Home / Service Discovery | `/home` | `514fb66664c0472e91f382e77e4526f9` | Home dashboard with search bar, service categories, active bookings, and bottom navigation. |
+| 4 | Worker Onboarding / Info | `/worker-onboarding` | `2e4b84779d874ca480d67615e3bccdd3` | Skill registration form for workers entering preferred work categories. |
+| 5 | Worker Professional Details | `/worker-details` | `a92a632745b442e38af4fdd3d4758ecc` | Detailed registration form including experience, verification uploads, and bank payment details. |
+| 6 | Worker Join Network | `/worker-join` | `d68a704b9fa445c9835518c7d53fa28a` | Landing screen inviting workers to join the platform. |
+| 7 | Verification Pending | `/verification-pending` | `54d8a729a22745559da4892f3da06f17` | Status screen showing background verification in progress by the admin team. |
+| 8 | OTP Verification | `/otp` | `e49b058c0f234f3e97225cc916882c31` | 6-digit pin input screen for phone/email verification. |
+| 9 | Customer Sign Up | `/customer-signup` | `3edff1f604ea43c0ae17e5bd88fd70ef` | Name, email, phone number, and password entry form for customers. |
+| 10 | Worker Sign Up | `/worker-signup` | `be15cb17f00c4ed9b333c39fec566d88` | Specialized registration form for skilled workers. |
+| 11 | Worker Verification Status | `/worker-status` | `9964bdc1bf934b578710f1dadf002f8c` | Duplicate status indicator view for pending approvals. |
+| 12 | Worker Professional Form | `/worker-form` | `1b7b469a1fda4ac298067ff13e99aa3c` | Full-length form covering bio, skill categories, and payout information. |
+| 13 | Address Setup | `/address` | `1b1a60ff15de46e885e54dd6ccff71f8` | Location search, map preview, and detailed address tags (Home, Work, Other). |
+| 14 | Forgot Password | `/forgot-password` | `a15ab65d9efa4dc48c1ee4c257954893` | Reset password screen requesting email or registered phone number. |
+| 15 | Customer Dashboard | `/customer-home` | `559502ee343b4596b09f6e6a077c9b53` | Alternative customer home view with service cards and quick search. |
+| 16 | Terms Confirmation | `/terms-confirm` | `424c8885fb164ec7a160cebcb6f9a846` | Secondary terms and condition review screen before account finalization. |
 
 ---
 
 ## Route Configuration
-- `/splash` -> `SplashScreen`
-- `/language` -> `LanguageSelectionScreen`
-- `/onboarding-1` -> `OnboardingScreen1`
-- `/onboarding-2` -> `OnboardingScreen2`
-- `/onboarding-3` -> `OnboardingScreen3`
-- `/location` -> `LocationPermissionScreen`
-- `/role` -> `RoleSelectionScreen`
+- `/login` -> `LoginScreen`
+- `/terms` -> `TermsAndPrivacyScreen`
+- `/home` -> `HomeScreen`
+- `/worker-onboarding` -> `WorkerOnboardingScreen`
+- `/worker-details` -> `WorkerDetailsScreen`
+- `/worker-join` -> `WorkerJoinScreen`
+- `/verification-pending` -> `VerificationPendingScreen`
+- `/otp` -> `OtpScreen`
+- `/customer-signup` -> `CustomerSignupScreen`
+- `/worker-signup` -> `WorkerSignupScreen`
+- `/worker-status` -> `WorkerStatusScreen`
+- `/worker-form` -> `WorkerFormScreen`
 - `/address` -> `AddressSetupScreen`
+- `/forgot-password` -> `ForgotPasswordScreen`
+- `/customer-home` -> `CustomerHomeScreen`
+- `/terms-confirm` -> `TermsConfirmScreen`
