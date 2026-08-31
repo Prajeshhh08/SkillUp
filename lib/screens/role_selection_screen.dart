@@ -6,7 +6,7 @@ import '../widgets/brand_logo.dart';
 
 /// Screen 7: Role Selection
 /// Visual: Two selectable role cards—"I want to hire workers" (Customer) and "I am a worker" (Worker)—with distinct icons, descriptions, and active border highlight.
-/// Behavior: Selecting a role and tapping "Continue" navigates to Screen 8 (/address).
+/// Behavior: Selecting a role starts its corresponding account setup flow.
 class RoleSelectionScreen extends StatefulWidget {
   const RoleSelectionScreen({super.key});
 
@@ -107,7 +107,11 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                 children: [
                   ElevatedButton(
                     onPressed: isRoleSelected
-                        ? () => context.go('/address')
+                        ? () => context.go(
+                              _selectedRole == 'customer'
+                                  ? '/customer-signup'
+                                  : '/worker-signup',
+                            )
                         : null,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: isRoleSelected

@@ -140,8 +140,7 @@ class _AddressSetupScreenState extends State<AddressSetupScreen> {
               ElevatedButton(
                 onPressed: () {
                   Navigator.pop(context);
-                  // Restart or return to splash / initial screen
-                  context.go('/splash');
+                  context.go('/customer-home');
                 },
                 child: const Text('Start Exploring'),
               ),
