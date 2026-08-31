@@ -95,6 +95,7 @@ class CustomerHomeScreen extends StatelessWidget {
           index: 0,
           onTap: (index) {
             if (index == 1) c.push('/booking-history');
+            if (index == 2) c.push('/customer-profile');
           },
         ),
       ),

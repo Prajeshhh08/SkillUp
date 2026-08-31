@@ -44,6 +44,7 @@ import '../screens/booking_history_screen.dart';
 import '../screens/rebook_screen.dart';
 import '../screens/service_address_screen.dart';
 import '../screens/order_summary_screen.dart';
+import '../screens/customer_profile_screen.dart';
 
 CustomTransitionPage<void> _buildCustomTransitionPage({
   required BuildContext context,
@@ -180,5 +181,6 @@ final GoRouter appRouter = GoRouter(
     GoRoute(path: '/rebook', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const RebookScreen())),
     GoRoute(path: '/service-address', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const ServiceAddressScreen())),
     GoRoute(path: '/order-summary', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const OrderSummaryScreen())),
+    GoRoute(path: '/customer-profile', pageBuilder: (context, state) => _buildCustomTransitionPage(context: context, state: state, child: const CustomerProfileScreen())),
   ],
 );
