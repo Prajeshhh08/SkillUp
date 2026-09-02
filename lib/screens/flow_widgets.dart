@@ -5,10 +5,11 @@ import '../theme/app_theme.dart';
 import '../widgets/brand_logo.dart';
 
 class FlowScaffold extends StatelessWidget {
-  const FlowScaffold({super.key, required this.title, required this.child, this.action});
+  const FlowScaffold({super.key, required this.title, required this.child, this.action, this.bottomNavigationBar});
   final String title;
   final Widget child;
   final Widget? action;
+  final Widget? bottomNavigationBar;
   @override
   Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
@@ -24,6 +25,7 @@ class FlowScaffold extends StatelessWidget {
           actions: action == null ? null : [action!],
         ),
         body: SafeArea(child: Padding(padding: const EdgeInsets.fromLTRB(24, 12, 24, 24), child: child)),
+        bottomNavigationBar: bottomNavigationBar,
       );
 }
 
@@ -48,6 +50,40 @@ class DashboardNav extends StatelessWidget {
     destinations: const [NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'), NavigationDestination(icon: Icon(Icons.calendar_month_outlined), selectedIcon: Icon(Icons.calendar_month_rounded), label: 'Bookings'), NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person_rounded), label: 'Profile')],
   );
 }
+
+Widget customerDashboardNav(BuildContext context, int index) => DashboardNav(
+  index: index,
+  onTap: (selectedIndex) {
+    switch (selectedIndex) {
+      case 0:
+        context.go('/customer-home');
+        break;
+      case 1:
+        context.go('/booking-history');
+        break;
+      case 2:
+        context.go('/customer-profile');
+        break;
+    }
+  },
+);
+
+Widget workerDashboardNav(BuildContext context, int index) => DashboardNav(
+  index: index,
+  onTap: (selectedIndex) {
+    switch (selectedIndex) {
+      case 0:
+        context.go('/home');
+        break;
+      case 1:
+        context.go('/worker-bookings');
+        break;
+      case 2:
+        context.go('/worker-profile-account');
+        break;
+    }
+  },
+);
 
 class AppCard extends StatelessWidget {
   const AppCard({super.key, required this.child, this.onTap});

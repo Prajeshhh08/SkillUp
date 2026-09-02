@@ -14,6 +14,7 @@ class CustomerProfileScreen extends StatelessWidget {
         : CustomerAccount.fullName.characters.first.toUpperCase();
     return FlowScaffold(
       title: 'Your profile',
+      bottomNavigationBar: customerDashboardNav(context, 2),
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -46,26 +47,6 @@ class CustomerProfileScreen extends StatelessWidget {
               style: TextStyle(color: AppTheme.textSecondary),
             ),
             const SizedBox(height: 28),
-            const AppCard(
-              child: Row(
-                children: [
-                  Icon(Icons.verified_user_rounded, color: AppTheme.primaryEmerald),
-                  SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Order acceptance', style: TextStyle(fontWeight: FontWeight.w600)),
-                        SizedBox(height: 4),
-                        Text('Your bookings accepted by professionals', style: TextStyle(color: AppTheme.textSecondary, fontSize: 12)),
-                      ],
-                    ),
-                  ),
-                  Text('96%', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w700, color: AppTheme.primaryEmerald)),
-                ],
-              ),
-            ),
-            const SizedBox(height: 24),
             sectionLabel('Account details'),
             AppCard(
               child: Column(
@@ -77,30 +58,6 @@ class CustomerProfileScreen extends StatelessWidget {
                   _DetailRow(icon: Icons.phone_outlined, label: 'Phone', value: CustomerAccount.phone),
                 ],
               ),
-            ),
-            const SizedBox(height: 18),
-            sectionLabel('Jobs known'),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              children: const [
-                Chip(
-                  avatar: Icon(
-                    Icons.plumbing_rounded,
-                    size: 18,
-                    color: AppTheme.primaryEmerald,
-                  ),
-                  label: Text('Plumbing'),
-                ),
-                Chip(
-                  avatar: Icon(
-                    Icons.carpenter_rounded,
-                    size: 18,
-                    color: AppTheme.primaryEmerald,
-                  ),
-                  label: Text('Carpentry'),
-                ),
-              ],
             ),
             const SizedBox(height: 24),
             OutlinedButton.icon(

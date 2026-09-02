@@ -45,6 +45,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     ),
-    bottomNavigationBar: DashboardNav(index: 0, onTap: (_) => {}),
+    bottomNavigationBar: workerDashboardNav(c, 0),
   );
 }

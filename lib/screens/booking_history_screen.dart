@@ -11,6 +11,7 @@ class BookingHistoryScreen extends StatelessWidget {
         length: 3,
         child: FlowScaffold(
           title: 'Booking history',
+          bottomNavigationBar: customerDashboardNav(context, 1),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [

@@ -91,13 +91,7 @@ class CustomerHomeScreen extends StatelessWidget {
           ),
         ),
       ),
-        bottomNavigationBar: DashboardNav(
-          index: 0,
-          onTap: (index) {
-            if (index == 1) c.push('/booking-history');
-            if (index == 2) c.push('/customer-profile');
-          },
-        ),
+        bottomNavigationBar: customerDashboardNav(c, 0),
       ),
     );
   }
