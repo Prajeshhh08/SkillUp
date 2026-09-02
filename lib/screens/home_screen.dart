@@ -6,8 +6,13 @@ class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
   @override
-  Widget build(BuildContext c) => Scaffold(
-    body: SafeArea(
+  Widget build(BuildContext c) => PopScope<void>(
+    canPop: false,
+    onPopInvokedWithResult: (didPop, result) {
+      if (!didPop) c.go('/role');
+    },
+    child: Scaffold(
+      body: SafeArea(
       child: Padding(
         padding: const EdgeInsets.all(24),
         child: Column(
@@ -45,6 +50,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     ),
-    bottomNavigationBar: workerDashboardNav(c, 0),
+      bottomNavigationBar: workerDashboardNav(c, 0),
+    ),
   );
 }

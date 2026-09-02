@@ -45,9 +45,32 @@ class DashboardNav extends StatelessWidget {
   final int index;
   final ValueChanged<int> onTap;
   @override
-  Widget build(BuildContext context) => NavigationBar(
-    selectedIndex: index, onDestinationSelected: onTap,
-    destinations: const [NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'), NavigationDestination(icon: Icon(Icons.calendar_month_outlined), selectedIcon: Icon(Icons.calendar_month_rounded), label: 'Bookings'), NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person_rounded), label: 'Profile')],
+  Widget build(BuildContext context) => NavigationBarTheme(
+    data: NavigationBarThemeData(
+      indicatorColor: AppTheme.primaryContainer,
+      iconTheme: WidgetStateProperty.resolveWith((states) => IconThemeData(
+        color: states.contains(WidgetState.selected)
+            ? AppTheme.primaryEmerald
+            : AppTheme.textSecondary,
+      )),
+      labelTextStyle: WidgetStateProperty.resolveWith((states) => TextStyle(
+        color: states.contains(WidgetState.selected)
+            ? AppTheme.primaryEmerald
+            : AppTheme.textSecondary,
+        fontWeight: states.contains(WidgetState.selected)
+            ? FontWeight.w700
+            : FontWeight.w500,
+      )),
+    ),
+    child: NavigationBar(
+      selectedIndex: index,
+      onDestinationSelected: onTap,
+      destinations: const [
+        NavigationDestination(icon: Icon(Icons.home_outlined), selectedIcon: Icon(Icons.home_rounded), label: 'Home'),
+        NavigationDestination(icon: Icon(Icons.calendar_month_outlined), selectedIcon: Icon(Icons.calendar_month_rounded), label: 'Bookings'),
+        NavigationDestination(icon: Icon(Icons.person_outline), selectedIcon: Icon(Icons.person_rounded), label: 'Profile'),
+      ],
+    ),
   );
 }
 
@@ -59,10 +82,10 @@ Widget customerDashboardNav(BuildContext context, int index) => DashboardNav(
         context.go('/customer-home');
         break;
       case 1:
-        context.go('/booking-history');
+        context.push('/booking-history');
         break;
       case 2:
-        context.go('/customer-profile');
+        context.push('/customer-profile');
         break;
     }
   },
@@ -76,10 +99,10 @@ Widget workerDashboardNav(BuildContext context, int index) => DashboardNav(
         context.go('/home');
         break;
       case 1:
-        context.go('/worker-bookings');
+        context.push('/worker-bookings');
         break;
       case 2:
-        context.go('/worker-profile-account');
+        context.push('/worker-profile-account');
         break;
     }
   },

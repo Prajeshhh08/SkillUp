@@ -56,22 +56,29 @@ CustomTransitionPage<void> _buildCustomTransitionPage({
   return CustomTransitionPage<void>(
     key: state.pageKey,
     child: child,
+    transitionDuration: const Duration(milliseconds: 320),
+    reverseTransitionDuration: const Duration(milliseconds: 260),
     transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      return FadeTransition(
-        opacity: CurvedAnimation(
-          parent: animation,
-          curve: Curves.easeInOut,
-        ),
+      final incomingAnimation = CurvedAnimation(
+        parent: animation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      final outgoingAnimation = CurvedAnimation(
+        parent: secondaryAnimation,
+        curve: Curves.easeOutCubic,
+        reverseCurve: Curves.easeInCubic,
+      );
+      return SlideTransition(
+        position: Tween<Offset>(
+          begin: Offset.zero,
+          end: const Offset(-0.18, 0),
+        ).animate(outgoingAnimation),
         child: SlideTransition(
           position: Tween<Offset>(
-            begin: const Offset(0.04, 0),
+            begin: const Offset(1, 0),
             end: Offset.zero,
-          ).animate(
-            CurvedAnimation(
-              parent: animation,
-              curve: Curves.easeOutCubic,
-            ),
-          ),
+          ).animate(incomingAnimation),
           child: child,
         ),
       );
