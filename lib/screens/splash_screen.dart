@@ -2,14 +2,17 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/auth_service.dart';
 import '../theme/app_theme.dart';
 import '../widgets/brand_logo.dart';
 
 /// Screen 1: Splash Screen
 /// Visual: Full Deep Emerald background (#145C4C) with centered white logo and loading indicator.
-/// Behavior: Automatically navigates to Screen 2 (/language) after a 2-second delay.
+/// Behavior: Validates persistent session during animation delay, routing active users to their dashboard.
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  const SplashScreen({super.key, this.authService});
+
+  final AuthService? authService;
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -20,11 +23,15 @@ class _SplashScreenState extends State<SplashScreen>
   late final AnimationController _controller;
   late final Animation<double> _fadeAnimation;
   late final Animation<double> _scaleAnimation;
+  late final AuthService _authService;
   Timer? _navigationTimer;
+  AuthResult? _authResult;
 
   @override
   void initState() {
     super.initState();
+    _authService = widget.authService ?? AuthService.instance;
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 1200),
@@ -44,12 +51,31 @@ class _SplashScreenState extends State<SplashScreen>
 
     _controller.forward();
 
-    // Auto-advance after 2 seconds
+    _checkSession();
+
+    // Auto-advance after 2.2 seconds
     _navigationTimer = Timer(const Duration(milliseconds: 2200), () {
-      if (mounted) {
-        context.go('/language');
+      if (!mounted) return;
+      if (_authResult != null) {
+        final role = _authResult!.role.toUpperCase();
+        if (role == 'CUSTOMER') {
+          context.go('/customer-home');
+          return;
+        } else if (role == 'WORKER') {
+          context.go('/home');
+          return;
+        }
       }
+      context.go('/language');
     });
+  }
+
+  Future<void> _checkSession() async {
+    try {
+      _authResult = await _authService.validateSession();
+    } catch (_) {
+      _authResult = null;
+    }
   }
 
   @override

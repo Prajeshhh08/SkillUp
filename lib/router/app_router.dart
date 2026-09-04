@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/session_service.dart';
 import '../screens/splash_screen.dart';
 import '../screens/language_selection_screen.dart';
 import '../screens/onboarding_screen_1.dart';
@@ -86,9 +87,91 @@ CustomTransitionPage<void> _buildCustomTransitionPage({
   );
 }
 
+const Set<String> publicRoutes = {
+  '/splash',
+  '/language',
+  '/onboarding-1',
+  '/onboarding-2',
+  '/onboarding-3',
+  '/location',
+  '/role',
+  '/address',
+  '/login',
+  '/terms',
+  '/otp',
+  '/customer-signup',
+  '/worker-signup',
+  '/forgot-password',
+  '/worker-onboarding',
+  '/worker-details',
+  '/worker-join',
+};
+
+const Set<String> customerRoutes = {
+  '/customer-home',
+  '/categories',
+  '/services',
+  '/service-details',
+  '/search',
+  '/nearby-workers',
+  '/map-matching',
+  '/emergency-booking',
+  '/booking-schedule',
+  '/booking-review',
+  '/booking-address',
+  '/booking-confirmation',
+  '/active-booking',
+  '/cancel-reschedule',
+  '/payment-checkout',
+  '/invoice',
+  '/rating-review',
+  '/booking-history',
+  '/rebook',
+  '/service-address',
+  '/order-summary',
+  '/customer-profile',
+  '/terms-confirm',
+};
+
+const Set<String> workerRoutes = {
+  '/home',
+  '/worker-status',
+  '/worker-form',
+  '/worker-bookings',
+  '/worker-profile-account',
+  '/worker-profile',
+  '/verification-pending',
+};
+
+String? appRouteGuard(BuildContext context, GoRouterState state) {
+  final path = state.uri.path;
+
+  // Allow all public/onboarding routes without requiring auth
+  if (publicRoutes.contains(path)) {
+    return null;
+  }
+
+  // Check stored authentication synchronously from cache
+  final token = SessionService.instance.cachedAccessToken;
+  if (token == null || token.isEmpty) {
+    return '/role';
+  }
+
+  final role = SessionService.instance.cachedRole?.toUpperCase();
+  if (customerRoutes.contains(path) && role == 'WORKER') {
+    return '/home';
+  }
+  if (workerRoutes.contains(path) && role == 'CUSTOMER') {
+    return '/customer-home';
+  }
+
+  return null;
+}
+
 /// Centralized GoRouter setup for SkillUp 8-screen onboarding flow.
 final GoRouter appRouter = GoRouter(
   initialLocation: '/splash',
+  redirect: appRouteGuard,
   routes: [
     GoRoute(
       path: '/splash',
