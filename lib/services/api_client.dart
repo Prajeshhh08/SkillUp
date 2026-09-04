@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:dio/dio.dart';
 import '../config/api_config.dart';
 import 'session_service.dart';
@@ -70,6 +71,26 @@ class ApiClient {
       final response = await request();
       return response.data ?? <String, dynamic>{};
     } on DioException catch (error) {
+      if (Platform.isAndroid &&
+          ApiConfig.definedBaseUrl.isEmpty &&
+          (error.type == DioExceptionType.connectionTimeout ||
+              error.type == DioExceptionType.connectionError)) {
+        final current = _dio.options.baseUrl;
+        final alt = current.contains('127.0.0.1')
+            ? current.replaceFirst('127.0.0.1', '10.0.2.2')
+            : current.contains('10.0.2.2')
+                ? current.replaceFirst('10.0.2.2', '127.0.0.1')
+                : null;
+        if (alt != null) {
+          try {
+            _dio.options.baseUrl = alt;
+            final response = await request();
+            return response.data ?? <String, dynamic>{};
+          } catch (_) {
+            _dio.options.baseUrl = current;
+          }
+        }
+      }
       throw _parseDioError(error);
     }
   }
@@ -81,6 +102,26 @@ class ApiClient {
       final response = await request();
       return response.data ?? <dynamic>[];
     } on DioException catch (error) {
+      if (Platform.isAndroid &&
+          ApiConfig.definedBaseUrl.isEmpty &&
+          (error.type == DioExceptionType.connectionTimeout ||
+              error.type == DioExceptionType.connectionError)) {
+        final current = _dio.options.baseUrl;
+        final alt = current.contains('127.0.0.1')
+            ? current.replaceFirst('127.0.0.1', '10.0.2.2')
+            : current.contains('10.0.2.2')
+                ? current.replaceFirst('10.0.2.2', '127.0.0.1')
+                : null;
+        if (alt != null) {
+          try {
+            _dio.options.baseUrl = alt;
+            final response = await request();
+            return response.data ?? <dynamic>[];
+          } catch (_) {
+            _dio.options.baseUrl = current;
+          }
+        }
+      }
       throw _parseDioError(error);
     }
   }

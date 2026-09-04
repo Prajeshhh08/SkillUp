@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import '../models/booking_flow_state.dart';
 import '../models/service_model.dart';
 import '../services/discovery_service.dart';
+import '../services/location_service.dart';
 import '../theme/app_theme.dart';
 import 'flow_widgets.dart';
 
@@ -32,8 +33,14 @@ class _NearbyWorkersScreenState extends State<NearbyWorkersScreen> {
   String? _errorMessage;
   List<NearbyWorkerItem> _workers = [];
 
-  late final double _lat = widget.latitude ?? 12.9716;
-  late final double _lng = widget.longitude ?? 77.5946;
+  late final double _lat =
+      widget.latitude ??
+      LocationService.instance.lastKnownPosition?.latitude ??
+      12.9716;
+  late final double _lng =
+      widget.longitude ??
+      LocationService.instance.lastKnownPosition?.longitude ??
+      77.5946;
   String? _serviceId;
 
   @override

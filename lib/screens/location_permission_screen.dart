@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../services/location_service.dart';
 import '../theme/app_theme.dart';
 
 /// Screen 6: Location Permission
 /// Visual: Location pin hero icon, explanatory text regarding GPS access, and primary "Allow Location Access" button.
-/// Behavior: Proceeds to Screen 7 (/role).
+/// Behavior: Requests hardware GPS permission and proceeds to Screen 7 (/role).
 class LocationPermissionScreen extends StatefulWidget {
   const LocationPermissionScreen({super.key});
 
@@ -18,6 +20,7 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
+  bool _isRequesting = false;
 
   @override
   void initState() {
@@ -37,6 +40,54 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
   void dispose() {
     _pulseController.dispose();
     super.dispose();
+  }
+
+  Future<void> _handlePermissionRequest() async {
+    setState(() => _isRequesting = true);
+    try {
+      final permission = await LocationService.instance.requestPermission();
+      if (!mounted) return;
+
+      if (permission == LocationPermission.always ||
+          permission == LocationPermission.whileInUse) {
+        // Warm up position cache in the background
+        LocationService.instance.getCurrentPosition();
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Location enabled successfully!'),
+            backgroundColor: AppTheme.primaryEmerald,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      } else if (permission == LocationPermission.deniedForever) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Location permission was permanently denied. Default location will be used.',
+            ),
+            backgroundColor: AppTheme.textSecondary,
+            duration: Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text(
+              'Location access was not granted. Default location will be used.',
+            ),
+            backgroundColor: AppTheme.textSecondary,
+            duration: Duration(seconds: 2),
+          ),
+        );
+      }
+    } catch (_) {
+      // Gracefully continue on any platform exception
+    } finally {
+      if (mounted) {
+        setState(() => _isRequesting = false);
+        context.push('/role');
+      }
+    }
   }
 
   @override
@@ -152,17 +203,39 @@ class _LocationPermissionScreenState extends State<LocationPermissionScreen>
               const Spacer(flex: 2),
               // Action Button
               ElevatedButton(
-                onPressed: () => context.push('/role'),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
-                    Icon(Icons.my_location_rounded, size: 20),
-                    SizedBox(width: 8),
-                    Text('Allow Location Access'),
-                  ],
+                onPressed: _isRequesting ? null : _handlePermissionRequest,
+                child: _isRequesting
+                    ? const SizedBox(
+                        height: 20,
+                        width: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white,
+                        ),
+                      )
+                    : Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: const [
+                          Icon(Icons.my_location_rounded, size: 20),
+                          SizedBox(width: 8),
+                          Text('Allow Location Access'),
+                        ],
+                      ),
+              ),
+              const SizedBox(height: 12),
+              // Skip option
+              TextButton(
+                onPressed: _isRequesting ? null : () => context.push('/role'),
+                child: Text(
+                  'Skip for now',
+                  style: GoogleFonts.inter(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppTheme.textSecondary,
+                  ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 16),
             ],
           ),
         ),

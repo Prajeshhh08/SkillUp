@@ -56,6 +56,7 @@ The UI flow is substantially built. Local PostgreSQL 16 with PostGIS and the Fas
 | End-to-end flow validation and local run guide | 2026-09-04 | Implemented automated multi-role end-to-end test suite (`test/end_to_end_flow_test.dart`) covering Customer Discovery -> Schedule -> Review Quote -> Active Tracking -> Worker Dashboard -> Rating & Review. Documented repeatable local startup & shutdown procedures and manual verification acceptance checklist. Verified 83/83 Flutter tests, 0 analyzer issues, and 8/8 backend pytest tests passing. |
 | Customer Home dynamic services & pull-to-refresh | 2026-09-04 | Upgraded `CustomerHomeScreen` to dynamic `StatefulWidget` with `RefreshIndicator` and live category fetching via `DiscoveryService` (`GET /categories`). Added clean offline/error card with "Retry" action and verified on physical Android device over USB reverse proxy. Full test suite: 85/85 passing. |
 | Persistent session & route guard (P1) | 2026-09-04 | Added startup session restoration in `SplashScreen` using `AuthService.validateSession()` and `GET /me`. Implemented synchronous in-memory token/role cache in `SessionService` and added `appRouteGuard` to `GoRouter` enforcing public vs customer-protected vs worker-protected route access. Verified 96/96 Flutter tests, 0 analyzer issues, and dedicated `test/session_and_guard_test.dart` suite. |
+| Real device GPS & reverse geocoding (P1) | 2026-09-04 | Replaced mock coordinates with real GPS location via `geolocator` and `LocationService`. Wired Android permissions (`ACCESS_FINE_LOCATION`, `ACCESS_COARSE_LOCATION`), `LocationPermissionScreen` permission request & skip handling, `AddressSetupScreen` GPS button and backend reverse geocoding (`GET /locations/reverse-geocode`), and `NearbyWorkersScreen` coordinate fallback. Added 12 unit and widget tests in `test/location_service_test.dart`. Full suite: 108/108 passing. |
 
 ### Backend and database work
 
@@ -120,7 +121,7 @@ Execute in the listed order. Estimate assumes one agent familiar with the existi
 
 | Priority | Task | Estimate | Dependencies | Acceptance criteria |
 |---:|---|---:|---|---|
-| P1 | Replace mock current location | 4–8 h | Location package and permissions | Real device location feeds address/matching coordinates with consent and failure handling. |
+| P1 | Replace mock current location | Completed | Location package and permissions | Real device location feeds address/matching coordinates with consent and failure handling. |
 | P1 | Persistent session and route guard | Completed | Session storage | App restores a valid session after restart via GET /me and redirects signed-out users via appRouteGuard. |
 | P1 | Test data/dev tooling | 2–4 h | API/database | A repeatable seed/reset workflow creates customer/worker/booking demo data without manual SQL. |
 | P1 | Backend test expansion | 6–10 h | Stable API behaviours | Authentication, authorization, booking status rules, and geo queries have focused tests. |
@@ -390,6 +391,7 @@ Next owner: <specific next task>
 | 2026-09-04 | End-to-end validation and local run guide completion | Built automated multi-role end-to-end test suite (`test/end_to_end_flow_test.dart`) covering customer booking lifecycle, active tracking, worker dashboard, status updates, and customer ratings. Documented repeatable local startup and shutdown procedures. Verified 83/83 tests passing, `flutter analyze` 0 issues, and 8/8 backend tests passing. |
 | 2026-09-04 | Customer Home dynamic services & pull-to-refresh | Converted `CustomerHomeScreen` to a `StatefulWidget` fetching live categories via `DiscoveryService`. Integrated `RefreshIndicator` with `AlwaysScrollableScrollPhysics` and resilient error card with "Retry" action. Verified 85/85 tests and physical USB debugging flow. |
 | 2026-09-04 | Persistent session & synchronous route guard (P1) | Implemented startup session check in `SplashScreen` validating stored JWT via `AuthService.validateSession()` and `GET /me`. Cached session credentials synchronously in `SessionService` to allow zero-delay route evaluation in `appRouteGuard` without frame flickering or async microtask stalls. Verified 96/96 tests. |
+| 2026-09-04 | Real device GPS integration & reverse geocoding (P1) | Added `geolocator: ^14.0.3` and manifest permissions. Created `LocationService` with defensive timeouts, graceful permission denial/disabled handling, fallback Bangalore coordinates (12.9716, 77.5946), and backend reverse-geocoding integration (`GET /locations/reverse-geocode`). Connected `LocationPermissionScreen`, `AddressSetupScreen`, and `NearbyWorkersScreen`. Verified 108/108 tests passing and 0 analyzer issues. |
 
 ---
 

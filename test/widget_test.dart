@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:skillup/main.dart';
 import 'package:skillup/models/customer_address.dart';
 import 'package:skillup/models/customer_profile.dart';
+import 'package:skillup/models/location_models.dart';
 import 'package:skillup/screens/address_setup_screen.dart';
 import 'package:skillup/services/customer_service.dart';
+import 'package:skillup/services/location_service.dart';
+
+class _FakeLocationService extends LocationService {
+  @override
+  Future<LocationPermission> requestPermission() async =>
+      LocationPermission.whileInUse;
+
+  @override
+  Future<AppCoordinates?> getCurrentPosition({
+    Duration timeout = const Duration(seconds: 8),
+  }) async =>
+      const AppCoordinates(latitude: 12.9716, longitude: 77.5946);
+}
 
 class _FakeCustomerService extends CustomerService {
   @override
@@ -46,6 +61,7 @@ class _FakeCustomerService extends CustomerService {
 void main() {
   setUp(() {
     CustomerService.instance = _FakeCustomerService();
+    LocationService.instance = _FakeLocationService();
   });
 
   testWidgets('SkillUpApp 8-screen onboarding flow test', (
@@ -97,6 +113,7 @@ void main() {
       find.widgetWithText(ElevatedButton, 'Allow Location Access'),
     );
     await tester.pump();
+    await tester.pump(const Duration(milliseconds: 500));
     await tester.pump(const Duration(milliseconds: 500));
     expect(find.text('How will you use SkillUp?'), findsOneWidget);
     expect(find.text('Customer'), findsOneWidget);

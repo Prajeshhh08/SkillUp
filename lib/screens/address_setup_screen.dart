@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../models/customer_address.dart';
 import '../services/api_client.dart';
 import '../services/customer_service.dart';
+import '../services/location_service.dart';
 import '../theme/app_theme.dart';
 
 /// Screen 8: Manual Address Setup & Address Management
@@ -40,12 +42,115 @@ class _AddressSetupScreenState extends State<AddressSetupScreen> {
 
   bool _isSaving = false;
   bool _isLoadingAddresses = false;
+  bool _isLocating = false;
   List<CustomerAddress> _savedAddresses = [];
 
   @override
   void initState() {
     super.initState();
+    final cached = LocationService.instance.lastKnownPosition;
+    if (cached != null) {
+      _latitude = cached.latitude;
+      _longitude = cached.longitude;
+    }
     _loadSavedAddresses();
+  }
+
+  Future<void> _useCurrentLocation() async {
+    setState(() => _isLocating = true);
+    try {
+      final pos = await LocationService.instance.getCurrentPosition();
+      if (pos == null) {
+        if (!mounted) return;
+        final serviceEnabled =
+            await LocationService.instance.isLocationServiceEnabled();
+        final permission = await LocationService.instance.checkPermission();
+        if (!mounted) return;
+        final message = !serviceEnabled
+            ? 'Turn on Location in your phone Quick Settings, then try again.'
+            : permission == LocationPermission.deniedForever
+                ? 'Location permission is blocked. Enable it for SkillUp in phone Settings.'
+                : permission == LocationPermission.denied
+                    ? 'Allow SkillUp to use your location, then try again.'
+                    : 'Could not get a GPS signal. Move near a window or outdoors and try again.';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(message),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+        return;
+      }
+
+      if (!mounted) return;
+      setState(() {
+        _latitude = pos.latitude;
+        _longitude = pos.longitude;
+      });
+
+      // Attempt reverse-geocoding to auto-fill address details
+      final geocoded = await LocationService.instance.reverseGeocode(
+        pos.latitude,
+        pos.longitude,
+      );
+
+      if (!mounted) return;
+      if (geocoded != null) {
+        setState(() {
+          if (geocoded.streetAddress != null &&
+              geocoded.streetAddress!.isNotEmpty) {
+            _streetController.text = geocoded.streetAddress!;
+          }
+          if (geocoded.city != null && geocoded.city!.isNotEmpty) {
+            _cityController.text = geocoded.city!;
+          }
+          if (geocoded.state != null && geocoded.state!.isNotEmpty) {
+            _stateController.text = geocoded.state!;
+          }
+          if (geocoded.postalCode != null && geocoded.postalCode!.isNotEmpty) {
+            _pincodeController.text = geocoded.postalCode!;
+          }
+          if (_flatController.text == 'Flat 4B, Emerald Heights') {
+            _flatController.clear();
+          }
+          if (_landmarkController.text == 'Near City Central Park') {
+            _landmarkController.clear();
+          }
+        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Location updated to ${pos.latitude.toStringAsFixed(4)}, ${pos.longitude.toStringAsFixed(4)} (${geocoded.city ?? 'Bengaluru'})',
+            ),
+            backgroundColor: AppTheme.primaryEmerald,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'GPS coordinates updated (${pos.latitude.toStringAsFixed(4)}, ${pos.longitude.toStringAsFixed(4)}). Please enter street and city details manually.',
+            ),
+            backgroundColor: AppTheme.primaryEmerald,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Location error: $e'),
+            backgroundColor: AppTheme.error,
+          ),
+        );
+      }
+    } finally {
+      if (mounted) {
+        setState(() => _isLocating = false);
+      }
+    }
   }
 
   @override
@@ -489,24 +594,7 @@ class _AddressSetupScreenState extends State<AddressSetupScreen> {
 
                       // Current Location Quick Action
                       InkWell(
-                        onTap: () {
-                          setState(() {
-                            _latitude = 12.9716;
-                            _longitude = 77.5946;
-                            _cityController.text = 'Bengaluru';
-                            _stateController.text = 'Karnataka';
-                            _pincodeController.text = '560001';
-                          });
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text(
-                                'Updated coordinates to current GPS location (12.9716, 77.5946)!',
-                              ),
-                              backgroundColor: AppTheme.primaryEmerald,
-                              duration: Duration(seconds: 2),
-                            ),
-                          );
-                        },
+                        onTap: _isLocating ? null : _useCurrentLocation,
                         borderRadius: BorderRadius.circular(AppTheme.radiusSm),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
@@ -515,18 +603,39 @@ class _AddressSetupScreenState extends State<AddressSetupScreen> {
                           ),
                           child: Row(
                             children: [
-                              const Icon(
-                                Icons.my_location_rounded,
-                                size: 18,
-                                color: AppTheme.primaryEmerald,
-                              ),
+                              if (_isLocating)
+                                const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                    color: AppTheme.primaryEmerald,
+                                  ),
+                                )
+                              else
+                                const Icon(
+                                  Icons.my_location_rounded,
+                                  size: 18,
+                                  color: AppTheme.primaryEmerald,
+                                ),
                               const SizedBox(width: 8),
                               Text(
-                                'Use current GPS location',
+                                _isLocating
+                                    ? 'Detecting current GPS location...'
+                                    : 'Use current GPS location',
                                 style: GoogleFonts.inter(
                                   fontSize: 14,
                                   fontWeight: FontWeight.w600,
                                   color: AppTheme.primaryEmerald,
+                                ),
+                              ),
+                              const Spacer(),
+                              Text(
+                                '${_latitude.toStringAsFixed(4)}, ${_longitude.toStringAsFixed(4)}',
+                                style: GoogleFonts.inter(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w500,
+                                  color: AppTheme.textSecondary,
                                 ),
                               ),
                             ],
