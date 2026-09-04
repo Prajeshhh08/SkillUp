@@ -34,6 +34,8 @@ class ApiClient {
     );
   }
 
+  ApiClient.custom(this._dio);
+
   static final instance = ApiClient._();
   late final Dio _dio;
 

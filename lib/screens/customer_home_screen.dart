@@ -14,83 +14,94 @@ class CustomerHomeScreen extends StatelessWidget {
         if (!didPop) c.go('/role');
       },
       child: Scaffold(
-      body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24),
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                flowTitle(
-                  'Find help for your home',
-                  'Book trusted professionals near you.',
-                ),
-          TextField(
-            onTap: () => c.push('/search'),
-            readOnly: true,
-            decoration: const InputDecoration(
-                    hintText: 'What do you need help with?',
-                    prefixIcon: Icon(Icons.search),
+        body: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  flowTitle(
+                    'Find help for your home',
+                    'Book trusted professionals near you.',
                   ),
-                ),
-                const SizedBox(height: 24),
-                sectionLabel('Popular services'),
-                Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
-                  children: ['Plumber', 'Electrician', 'Painter', 'Cleaner']
-                      .map(
-                        (x) => Chip(
-                          avatar: const Icon(
-                            Icons.handyman_rounded,
-                            size: 17,
-                            color: AppTheme.primaryEmerald,
-                          ),
-                          label: Text(x),
-                        ),
-                      )
-                      .toList(),
-                ),
-                const SizedBox(height: 26),
-                sectionLabel('Quick actions'),
-                AppCard(
-            onTap: () => c.push('/categories'),
-                  child: const ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: Icon(
-                      Icons.add_home_work_rounded,
-                      color: AppTheme.primaryEmerald,
+                  TextField(
+                    onTap: () => c.push('/search'),
+                    readOnly: true,
+                    decoration: const InputDecoration(
+                      hintText: 'What do you need help with?',
+                      prefixIcon: Icon(Icons.search),
                     ),
-              title: Text('Browse services'),
-                    subtitle: Text('Tell us what you need help with'),
                   ),
-                ),
-          const SizedBox(height: 16),
-          AppCard(
-            onTap: () => c.push('/emergency-booking'),
-            child: const ListTile(
-              contentPadding: EdgeInsets.zero,
-              leading: Icon(Icons.emergency_rounded, color: AppTheme.error),
-              title: Text('Emergency booking'),
-              subtitle: Text('Request urgent help now'),
-            ),
-          ),
-          const SizedBox(height: 16),
-                sectionLabel('Recently viewed'),
-                const AppCard(
-                  child: ListTile(
-                    contentPadding: EdgeInsets.zero,
-                    leading: CircleAvatar(child: Icon(Icons.person_rounded)),
-                    title: Text('Ravi Kumar'),
-                    subtitle: Text('Electrician · 4.8 ★'),
-                    trailing: Icon(Icons.arrow_forward_rounded),
+                  const SizedBox(height: 24),
+                  sectionLabel('Popular services'),
+                  Wrap(
+                    spacing: 10,
+                    runSpacing: 10,
+                    children:
+                        [
+                              ('Plumber', 'Plumbing'),
+                              ('Electrician', 'Electrical'),
+                              ('Painter', 'Painting'),
+                              ('Cleaner', 'Cleaning'),
+                            ]
+                            .map(
+                              (pair) => ActionChip(
+                                avatar: const Icon(
+                                  Icons.handyman_rounded,
+                                  size: 17,
+                                  color: AppTheme.primaryEmerald,
+                                ),
+                                label: Text(pair.$1),
+                                onPressed: () =>
+                                    c.push('/services?category=${pair.$2}'),
+                              ),
+                            )
+                            .toList(),
                   ),
-                ),
-              ],
+                  const SizedBox(height: 26),
+                  sectionLabel('Quick actions'),
+                  AppCard(
+                    onTap: () => c.push('/categories'),
+                    child: const ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.add_home_work_rounded,
+                        color: AppTheme.primaryEmerald,
+                      ),
+                      title: Text('Browse services'),
+                      subtitle: Text('Tell us what you need help with'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  AppCard(
+                    onTap: () => c.push('/emergency-booking'),
+                    child: const ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: Icon(
+                        Icons.emergency_rounded,
+                        color: AppTheme.error,
+                      ),
+                      title: Text('Emergency booking'),
+                      subtitle: Text('Request urgent help now'),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  sectionLabel('Recently viewed'),
+                  const AppCard(
+                    child: ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: CircleAvatar(child: Icon(Icons.person_rounded)),
+                      title: Text('Ravi Kumar'),
+                      subtitle: Text('Electrician · 4.8 ★'),
+                      trailing: Icon(Icons.arrow_forward_rounded),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
-      ),
         bottomNavigationBar: customerDashboardNav(c, 0),
       ),
     );

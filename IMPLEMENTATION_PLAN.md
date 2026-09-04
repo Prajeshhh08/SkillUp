@@ -46,6 +46,8 @@ The UI flow is substantially built. Local PostgreSQL 16 with PostGIS and the Fas
 | Shared API/session/auth foundation added | 2026-09-03 | `lib/config/api_config.dart`, `lib/services/api_client.dart`, `lib/services/session_service.dart`, and `lib/services/auth_service.dart`. |
 | Account screens connected to auth API | 2026-09-03 | Customer sign-up, worker sign-up, login, OTP verification/resend, and terms acceptance call `/api/v1` endpoints. Development OTP is `123456`. |
 | Customer profile and address integration | 2026-09-04 | Connected `CustomerProfileScreen` and `AddressSetupScreen` to API. Added `CustomerProfile`, `CustomerMetrics`, `CustomerAddress` typed models and `CustomerService`. Hardened `ApiClient` with List responses, delete method, and empty token check. |
+| Worker profile and professional setup | 2026-09-04 | Connected `WorkerFormScreen` and `WorkerAccountProfileScreen` to API. Added `SkillCategory`, `WorkerProfile`, and `WorkerProfileUpdatePayload` models and `WorkerService`. Wired skill category fetching, profile updates, availability toggle, and live profile metrics. Local mock document upload preserved. |
+| Service discovery integration | 2026-09-04 | Connected `CategoriesScreen`, `ServiceListingScreen`, `ServiceDetailsScreen`, `SearchFilterScreen`, and `NearbyWorkersScreen` to `/categories`, `/services`, `/services/{id}`, `/search`, and `/workers/nearby`. Added `ServiceModel`, `SearchResult`, `WorkerSearchItem`, `NearbyWorkerItem`, and `DiscoveryService`. Introduced `BookingFlowState` to ensure category/service/worker identities survive navigation into booking flows. |
 
 ### Backend and database work
 
@@ -76,8 +78,8 @@ The UI flow is substantially built. Local PostgreSQL 16 with PostGIS and the Fas
 |---|---|---:|---|
 | Account/auth integration | In progress | 80% | API calls are wired. Validate on an emulator/device after confirming its API base URL can reach the computer. |
 | Customer profile and addresses | Completed | 100% | Profile reads `/customers/me/profile` and `/customers/me/metrics`; addresses create/list/delete via `/addresses`; loading, error, and retry states operational. |
-| Worker profile/setup | In progress | 10% | Worker profile/form are static. Map selected skills to backend category UUIDs. |
-| Discovery and booking flow | Not started | 0% | Existing screens are designed, but must receive category/service/worker/booking IDs through routes or a flow state object. |
+| Worker profile/setup | Completed | 100% | Live skills and profile wired to `/skill-categories` and `/workers/me/profile`. Skill selection, availability toggle, bio, hourly rate, and verification badge functional. |
+| Discovery and booking flow | In progress | 45% | Discovery screens connected 100% (`/categories`, `/services`, `/services/{id}`, `/search`, `/workers/nearby`). Service identity survives navigation. Ready for booking creation and customer bookings. |
 | Worker jobs | Not started | 0% | Existing job screens need `/worker/jobs/*` data and status mutations. |
 
 ### Known blockers and risks
@@ -124,8 +126,8 @@ Execute in the listed order. Estimate assumes one agent familiar with the existi
 - [x] Connect sign-up, login, OTP, and terms-confirmation UI.
 - [x] Add response-list and typed model support to the Flutter API layer.
 - [x] Connect customer profile and address screens.
-- [ ] Connect worker profile, professional setup, and skills.
-- [ ] Connect categories, services, search, and nearby worker screens.
+- [x] Connect worker profile, professional setup, and skills.
+- [x] Connect categories, services, search, and nearby worker screens.
 - [ ] Connect quote, booking creation, booking list/details, cancellation, reschedule, review, and invoice screens.
 - [ ] Connect worker job list, acceptance/decline, and job status updates.
 - [ ] Add loading, empty, error, and retry states on every remote-data screen.
@@ -342,6 +344,8 @@ Next owner: <specific next task>
 | 2026-09-03 | Backend could not load Pydantic email schema. | Added `email-validator` to requirements. |
 | 2026-09-03 | Scope for first working version. | Payments, real document storage, and live WebSocket tracking remain mocked. |
 | 2026-09-04 | Customer profile & address data source of truth | Replaced static `CustomerAccount` UI state with `CustomerService` backed by `/customers/me/profile`, `/customers/me/metrics`, and `/addresses`. Added list response, delete method, and empty token guard to `ApiClient`. Added `aiosqlite` to backend requirements for async SQLite pytest suite. |
+| 2026-09-04 | Worker profile and professional setup integration | Bound `WorkerFormScreen` and `WorkerAccountProfileScreen` to `WorkerService` (`/workers/me/profile`, `/skill-categories`). Mapped skills to backend UUIDs with experience years. Live profile displays progress, verification status badge, skills, bio, rate, and availability toggle. Local document upload mock preserved per Phase 1 scope. |
+| 2026-09-04 | Service discovery & flow identity preservation | Bound `CategoriesScreen`, `ServiceListingScreen`, `ServiceDetailsScreen`, `SearchFilterScreen`, and `NearbyWorkersScreen` to `DiscoveryService` (`/categories`, `/services`, `/services/{id}`, `/search`, `/workers/nearby`). Added `BookingFlowState` singleton and GoRouter query parameters to preserve category/service/worker identity into booking flows. |
 
 ---
 
