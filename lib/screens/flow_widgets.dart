@@ -36,7 +36,7 @@ Widget flowTitle(String title, String subtitle) => Column(crossAxisAlignment: Cr
   const SizedBox(height: 28),
 ]);
 
-Widget primaryAction(String label, VoidCallback onPressed) => ElevatedButton(onPressed: onPressed, child: Text(label));
+Widget primaryAction(String label, VoidCallback? onPressed) => ElevatedButton(onPressed: onPressed, child: Text(label));
 
 Widget sectionLabel(String label) => Padding(padding: const EdgeInsets.only(bottom: 10), child: Text(label.toUpperCase(), style: GoogleFonts.inter(fontSize: 12, fontWeight: FontWeight.w700, color: AppTheme.textSecondary, letterSpacing: .8)));
 

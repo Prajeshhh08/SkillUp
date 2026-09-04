@@ -37,7 +37,7 @@ class WorkerFormScreen extends StatelessWidget {
               'Weekends',
               'Every day',
             ].map((x) => DropdownMenuItem(value: x, child: Text(x))).toList(),
-            onChanged: (_) => null,
+            onChanged: (_) {},
           ),
           const SizedBox(height: 14),
           DropdownButtonFormField<String>(
@@ -46,7 +46,7 @@ class WorkerFormScreen extends StatelessWidget {
               'Bank transfer',
               'UPI',
             ].map((x) => DropdownMenuItem(value: x, child: Text(x))).toList(),
-            onChanged: (_) => null,
+            onChanged: (_) {},
           ),
           const SizedBox(height: 22),
           primaryAction('Save profile', () => c.push('/verification-pending')),
