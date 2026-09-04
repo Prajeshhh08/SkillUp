@@ -5,6 +5,7 @@ import 'package:skillup/models/booking_flow_state.dart';
 import 'package:skillup/models/service_model.dart';
 import 'package:skillup/models/skill_category.dart';
 import 'package:skillup/screens/categories_screen.dart';
+import 'package:skillup/screens/customer_home_screen.dart';
 import 'package:skillup/screens/nearby_workers_screen.dart';
 import 'package:skillup/screens/search_filter_screen.dart';
 import 'package:skillup/screens/service_details_screen.dart';
@@ -15,7 +16,7 @@ import 'package:skillup/services/discovery_service.dart';
 class _FakeDiscoveryService extends DiscoveryService {
   _FakeDiscoveryService({this.throwError = false, this.emptyServices = false});
 
-  final bool throwError;
+  bool throwError;
   final bool emptyServices;
 
   @override
@@ -371,6 +372,44 @@ void main() {
         BookingFlowState.instance.selectedWorker?.fullName,
         'Anita Sharma',
       );
+    });
+  });
+
+  group('CustomerHomeScreen', () {
+    testWidgets('renders categories and supports pull-to-refresh', (tester) async {
+      final fake = _FakeDiscoveryService();
+      await tester.pumpWidget(
+        _wrapWithRouter(CustomerHomeScreen(discoveryService: fake)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Find help for your home'), findsOneWidget);
+      expect(find.text('Plumbing'), findsOneWidget);
+      expect(find.text('Electrical'), findsOneWidget);
+
+      // Pull down to refresh
+      await tester.fling(find.byType(SingleChildScrollView), const Offset(0, 300), 1000);
+      await tester.pumpAndSettle();
+      expect(find.text('Plumbing'), findsOneWidget);
+    });
+
+    testWidgets('shows error card and retries when error occurs', (tester) async {
+      final fake = _FakeDiscoveryService(throwError: true);
+      await tester.pumpWidget(
+        _wrapWithRouter(CustomerHomeScreen(discoveryService: fake)),
+      );
+      await tester.pumpAndSettle();
+
+      expect(find.text('Unable to load services'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+
+      // Now fix error and tap retry
+      fake.throwError = false;
+      await tester.tap(find.text('Retry'));
+      await tester.pumpAndSettle();
+
+      expect(find.text('Unable to load services'), findsNothing);
+      expect(find.text('Plumbing'), findsOneWidget);
     });
   });
 }

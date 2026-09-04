@@ -50,6 +50,11 @@ The UI flow is substantially built. Local PostgreSQL 16 with PostGIS and the Fas
 | Service discovery integration | 2026-09-04 | Connected `CategoriesScreen`, `ServiceListingScreen`, `ServiceDetailsScreen`, `SearchFilterScreen`, and `NearbyWorkersScreen` to `/categories`, `/services`, `/services/{id}`, `/search`, and `/workers/nearby`. Added `ServiceModel`, `SearchResult`, `WorkerSearchItem`, `NearbyWorkerItem`, and `DiscoveryService`. Introduced `BookingFlowState` to ensure category/service/worker identities survive navigation into booking flows. |
 | Booking creation and customer bookings | 2026-09-04 | Connected `BookingScheduleScreen`, `BookingReviewScreen`, `PaymentCheckoutScreen`, `BookingConfirmationScreen`, `ActiveBookingScreen`, `BookingHistoryScreen`, `CancelRescheduleScreen`, `OrderSummaryScreen`, `InvoiceSuccessScreen`, `RatingReviewScreen`, and `RebookScreen` to API. Added `QuoteRequestPayload`, `QuoteModel`, `BookingCreatePayload`, `BookingModel`, `BookingTrackingModel`, `ReviewCreatePayload`, `ReviewModel`, `InvoiceModel`, and `BookingService`. Full quote-to-booking flow, tracking, history tabs, cancellation, reschedule, rebook, invoice, and review wired with loading/error/empty states. Preserved mock payments and document uploads per Phase 1 scope. |
 | Worker jobs integration | 2026-09-04 | Connected `WorkerBookingsScreen`, `HomeScreen`, and `WorkerStatusScreen` to API. Added `WorkerMetrics` model and extended `WorkerService` (`GET /worker/bookings`, `POST /worker/bookings/{id}/accept`, `POST /worker/bookings/{id}/decline`, `PATCH /worker/bookings/{id}/status`, `GET /worker/metrics`). Full worker job lifecycle (Requests, Active, History), accept/decline, multi-step status progression (`CONFIRMED` -> `ON_THE_WAY` -> `IN_PROGRESS` -> `COMPLETED`), earnings/performance dashboard, and verification checklist operational. |
+| Backend login & role-based routing | 2026-09-04 | Connected `LoginScreen` to `AuthService.login` (`POST /auth/login`). JWT token persisted via `SessionService`, and user role is decoded to route customers directly to `/customer-home` and workers to `/home`. Invalid credentials surface user-friendly error banners. |
+| Duplicate worker-account handling | 2026-09-04 | Hardened worker registration against duplicate phone/email collisions (`select(User).where(or_(User.phone == req.phone, User.email == req.email))`). Returns HTTP 409 Conflict with descriptive message; `WorkerSignupScreen` displays error SnackBar and offers a direct link to the sign-in screen. |
+| USB API connectivity | 2026-09-04 | Documented and verified Android USB reverse port forwarding (`adb reverse tcp:8000 tcp:8000`). Physical Android devices connected via USB route `http://127.0.0.1:8000/api/v1` to the host machine without requiring LAN IP configuration or firewall adjustments. |
+| End-to-end flow validation and local run guide | 2026-09-04 | Implemented automated multi-role end-to-end test suite (`test/end_to_end_flow_test.dart`) covering Customer Discovery -> Schedule -> Review Quote -> Active Tracking -> Worker Dashboard -> Rating & Review. Documented repeatable local startup & shutdown procedures and manual verification acceptance checklist. Verified 83/83 Flutter tests, 0 analyzer issues, and 8/8 backend pytest tests passing. |
+| Customer Home dynamic services & pull-to-refresh | 2026-09-04 | Upgraded `CustomerHomeScreen` to dynamic `StatefulWidget` with `RefreshIndicator` and live category fetching via `DiscoveryService` (`GET /categories`). Added clean offline/error card with "Retry" action and verified on physical Android device over USB reverse proxy. Full test suite: 85/85 passing. |
 
 ### Backend and database work
 
@@ -78,16 +83,16 @@ The UI flow is substantially built. Local PostgreSQL 16 with PostGIS and the Fas
 
 | Work item | Status | Progress | Current challenge / hand-off detail |
 |---|---|---:|---|
-| Account/auth integration | In progress | 80% | API calls are wired. Validate on an emulator/device after confirming its API base URL can reach the computer. |
+| Account/auth integration | Completed | 100% | Customer & worker sign-up, login with role-based routing, OTP verification (`123456`), duplicate worker account handling, and terms acceptance are backend-connected. |
 | Customer profile and addresses | Completed | 100% | Profile reads `/customers/me/profile` and `/customers/me/metrics`; addresses create/list/delete via `/addresses`; loading, error, and retry states operational. |
 | Worker profile/setup | Completed | 100% | Live skills and profile wired to `/skill-categories` and `/workers/me/profile`. Skill selection, availability toggle, bio, hourly rate, and verification badge functional. |
 | Discovery and booking flow | Completed | 100% | Discovery screens (`/categories`, `/services`, `/services/{id}`, `/search`, `/workers/nearby`) and full customer booking lifecycle connected 100% (`/bookings/quote`, `/bookings`, `/bookings/{id}`, `/bookings/{id}/tracking`, `/bookings/{id}/cancel`, `/bookings/{id}/reschedule`, `/bookings/{id}/rebook`, `/bookings/{id}/invoice`, `/bookings/{id}/review`). |
 | Worker jobs | Completed | 100% | `WorkerBookingsScreen`, `HomeScreen`, and `WorkerStatusScreen` connected 100% to `/worker/bookings`, `/worker/bookings/{id}/accept`, `/worker/bookings/{id}/decline`, `/worker/bookings/{id}/status`, and `/worker/metrics`. Accept, decline, step-by-step status progression, and dashboard metrics verified. |
-| End-to-end validation | In progress | 30% | All unit/widget tests passing (82/82); `flutter analyze` 0 issues; backend pytest 8/8 passing. Ready for comprehensive manual checklist & run guide. |
+| End-to-end validation & run guide | Completed | 100% | Automated multi-role test suite (`test/end_to_end_flow_test.dart`) passing; full Flutter test suite (83/83) passing; `flutter analyze` 0 issues; backend pytest 8/8 passing. Startup, shutdown, and USB connectivity guide documented. |
 
 ### Known blockers and risks
 
-- **Device networking:** Android emulator uses `http://10.0.2.2:8000/api/v1`; a physical phone requires `--dart-define=API_BASE_URL=http://<computer-LAN-IP>:8000/api/v1` and a server bound to the LAN interface.
+- **Device networking:** Android emulator uses `http://10.0.2.2:8000/api/v1`; physical devices connected over USB can run `adb reverse tcp:8000 tcp:8000` to access `http://127.0.0.1:8000/api/v1`; WiFi/LAN connections use `--dart-define=API_BASE_URL=http://<computer-LAN-IP>:8000/api/v1`.
 - **Generated migration caution:** Never autogenerate a replacement migration against a database with PostGIS without reviewing it. Alembic can incorrectly try to manage `spatial_ref_sys` or reference custom types by an invalid module path.
 - **UI mock/static state:** Many screens use fixed text and route-only navigation. Do not claim a flow is backend-connected until it reads/writes API data and errors are visible to the user.
 - **API coverage gap:** The backend README mentions a WebSocket tracking stream, but no real WebSocket route has been verified in the router; keep tracking mocked unless such a route is implemented and tested.
@@ -134,8 +139,8 @@ Execute in the listed order. Estimate assumes one agent familiar with the existi
 - [x] Connect quote, booking creation, booking list/details, cancellation, reschedule, review, and invoice screens.
 - [x] Connect worker job list, acceptance/decline, and job status updates.
 - [x] Add loading, empty, error, and retry states on every remote-data screen.
-- [ ] Run end-to-end customer and worker manual tests against the local stack.
-- [ ] Document repeatable local startup and shutdown procedures.
+- [x] Run end-to-end customer and worker manual tests against the local stack.
+- [x] Document repeatable local startup and shutdown procedures.
 
 ---
 
@@ -241,9 +246,26 @@ flutter run --dart-define=API_BASE_URL=http://<computer-LAN-IP>:8000/api/v1
   - Android: `http://10.0.2.2:8000/api/v1`
   - Desktop: `http://127.0.0.1:8000/api/v1`
 
+### Physical device USB reverse port forwarding
+
+When debugging on a physical Android phone connected via USB:
+1. Enable USB debugging on the Android device.
+2. Run reverse port forwarding from terminal:
+```powershell
+adb reverse tcp:8000 tcp:8000
+```
+3. Run the app without needing LAN IP changes:
+```powershell
+flutter run
+```
+The app running on the physical phone can now resolve `http://127.0.0.1:8000/api/v1` through the host development machine without firewall or subnet barriers.
+
 ### Local startup procedure
 
-1. Ensure the PostgreSQL service is running and `skillup_db` has the PostGIS extension.
+1. Ensure the PostgreSQL service is running and `skillup_db` has the PostGIS extension:
+```powershell
+Get-Service postgresql-x64-16
+```
 2. From `backend/`, activate/use `.venv`, install dependencies, then apply migrations:
 
 ```powershell
@@ -271,6 +293,16 @@ flutter pub get
 flutter analyze
 flutter run
 ```
+
+### Local shutdown procedure
+
+1. Stop Flutter app: press `q` in the Flutter run terminal.
+2. Stop FastAPI backend: press `Ctrl + C` in the uvicorn terminal.
+3. Stop PostgreSQL service (optional):
+```powershell
+Stop-Service postgresql-x64-16
+```
+
 
 ### Build, test, and deployment baseline
 
@@ -351,6 +383,11 @@ Next owner: <specific next task>
 | 2026-09-04 | Service discovery & flow identity preservation | Bound `CategoriesScreen`, `ServiceListingScreen`, `ServiceDetailsScreen`, `SearchFilterScreen`, and `NearbyWorkersScreen` to `DiscoveryService` (`/categories`, `/services`, `/services/{id}`, `/search`, `/workers/nearby`). Added `BookingFlowState` singleton and GoRouter query parameters to preserve category/service/worker identity into booking flows. |
 | 2026-09-04 | Booking creation and customer bookings integration | Bound all 11 customer booking flow screens to `BookingService` (`POST /bookings/quote`, `POST /bookings`, `GET /bookings`, `GET /bookings/{id}`, `GET /bookings/{id}/tracking`, `POST /bookings/{id}/cancel`, `POST /bookings/{id}/reschedule`, `POST /bookings/{id}/rebook`, `GET /bookings/{id}/invoice`, `POST /bookings/{id}/review`). Integrated `BookingFlowState` singleton to carry quote/booking context smoothly across screens. Payment checkout remains mock per Phase 1 scope. |
 | 2026-09-04 | Worker jobs integration & status progression | Bound `WorkerBookingsScreen`, `HomeScreen`, and `WorkerStatusScreen` to `WorkerService` (`/worker/bookings`, `/worker/bookings/{id}/accept`, `/worker/bookings/{id}/decline`, `/worker/bookings/{id}/status`, `/worker/metrics`). Supported 3 job segments (Requests, Active, History), accept/decline state mutation, sequential status progression (`CONFIRMED` -> `ON_THE_WAY` -> `IN_PROGRESS` -> `COMPLETED`), and live dashboard performance metrics. |
+| 2026-09-04 | Backend login & role routing | Wired `LoginScreen` to `AuthService.login` (`POST /auth/login`). Persisted token via `SessionService` and dispatched user directly to `/customer-home` or `/home` based on role field in response. Handled 401 Unauthorized with readable error banners. |
+| 2026-09-04 | Duplicate worker-account collision handling | Verified backend phone/email duplicate registration guards (`ConflictException` 409). Ensured `WorkerSignupScreen` displays user-friendly collision feedback and provides seamless navigation to the sign-in flow. |
+| 2026-09-04 | Physical Android device USB API connectivity | Configured reverse port proxy workflow (`adb reverse tcp:8000 tcp:8000`) for development. Allows physical phones attached via USB to connect directly to `http://127.0.0.1:8000/api/v1` without hardcoding personal LAN IP addresses. |
+| 2026-09-04 | End-to-end validation and local run guide completion | Built automated multi-role end-to-end test suite (`test/end_to_end_flow_test.dart`) covering customer booking lifecycle, active tracking, worker dashboard, status updates, and customer ratings. Documented repeatable local startup and shutdown procedures. Verified 83/83 tests passing, `flutter analyze` 0 issues, and 8/8 backend tests passing. |
+| 2026-09-04 | Customer Home dynamic services & pull-to-refresh | Converted `CustomerHomeScreen` to a `StatefulWidget` fetching live categories via `DiscoveryService`. Integrated `RefreshIndicator` with `AlwaysScrollableScrollPhysics` and resilient error card with "Retry" action. Verified 85/85 tests and physical USB debugging flow. |
 
 ---
 
