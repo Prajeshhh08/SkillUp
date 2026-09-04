@@ -90,20 +90,25 @@ class _OtpScreenState extends State<OtpScreen> {
         identifier: identifier,
         otp: otp,
       );
-      if (!verified)
+      if (!verified) {
         throw const ApiException('The verification code was not accepted.');
-      if (mounted) context.push('/terms-confirm?flow=$flow');
+      }
+      if (mounted) {
+        context.push('/terms-confirm?flow=$flow');
+      }
     } on ApiException catch (error) {
       _showError(error.message);
     } finally {
-      if (mounted) setState(() => _submitting = false);
+      if (mounted) {
+        setState(() => _submitting = false);
+      }
     }
   }
 
   Future<void> _resend(String identifier) async {
     try {
       await AuthService.instance.sendOtp(identifier: identifier);
-      if (mounted)
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
             content: Text(
@@ -111,15 +116,17 @@ class _OtpScreenState extends State<OtpScreen> {
             ),
           ),
         );
+      }
     } on ApiException catch (error) {
       _showError(error.message);
     }
   }
 
   void _showError(String message) {
-    if (mounted)
+    if (mounted) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }

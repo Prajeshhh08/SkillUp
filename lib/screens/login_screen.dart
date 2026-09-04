@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/api_client.dart';
+import '../services/auth_service.dart';
 import 'flow_widgets.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -11,6 +13,16 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   int role = 0;
+  bool _submitting = false;
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
+
+  @override
+  void dispose() {
+    _identifierController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) => FlowScaffold(
@@ -32,17 +44,21 @@ class _LoginScreenState extends State<LoginScreen> {
             onSelectionChanged: (v) => setState(() => role = v.first),
           ),
           const SizedBox(height: 24),
-          const TextField(
+          TextField(
             key: Key('login-phone'),
+            controller: _identifierController,
             keyboardType: TextInputType.phone,
+            autofillHints: const [AutofillHints.username],
             decoration: InputDecoration(
-              labelText: 'Phone number',
+              labelText: 'Phone number or email',
               prefixIcon: Icon(Icons.phone_outlined),
             ),
           ),
           const SizedBox(height: 14),
-          const TextField(
+          TextField(
+            controller: _passwordController,
             obscureText: true,
+            autofillHints: const [AutofillHints.password],
             decoration: InputDecoration(
               labelText: 'Password',
               prefixIcon: Icon(Icons.lock_outline),
@@ -57,8 +73,8 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
           const SizedBox(height: 12),
           primaryAction(
-            'Sign In',
-            () => context.go(role == 0 ? '/customer-home' : '/home'),
+            _submitting ? 'Signing in...' : 'Sign In',
+            _submitting ? null : _signIn,
           ),
           const SizedBox(height: 16),
           Row(
@@ -77,4 +93,34 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     ),
   );
+
+  Future<void> _signIn() async {
+    final identifier = _identifierController.text.trim();
+    final password = _passwordController.text;
+    if (identifier.isEmpty || password.isEmpty) {
+      _showError('Enter your phone number or email and password.');
+      return;
+    }
+
+    setState(() => _submitting = true);
+    try {
+      final result = await AuthService.instance.login(
+        identifier: identifier,
+        password: password,
+      );
+      if (!mounted) return;
+      final isCustomer = result.role.toUpperCase() == 'CUSTOMER';
+      context.go(isCustomer ? '/customer-home' : '/home');
+    } on ApiException catch (error) {
+      _showError(error.message);
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
 }

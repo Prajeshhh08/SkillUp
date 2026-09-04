@@ -74,6 +74,10 @@ class _WorkerSignupScreenState extends State<WorkerSignupScreen> {
             _submitting ? 'Creating account...' : 'Create Account',
             _submitting ? null : _createAccount,
           ),
+          TextButton(
+            onPressed: _submitting ? null : () => c.push('/login'),
+            child: const Text('Already have an account? Sign in'),
+          ),
         ],
       ),
     ),
@@ -99,21 +103,25 @@ class _WorkerSignupScreenState extends State<WorkerSignupScreen> {
         password: password,
       );
       await AuthService.instance.sendOtp(identifier: phone);
-      if (mounted)
+      if (mounted) {
         context.push(
           '/otp?flow=worker&identifier=${Uri.encodeComponent(phone)}',
         );
+      }
     } on ApiException catch (error) {
       _showError(error.message);
     } finally {
-      if (mounted) setState(() => _submitting = false);
+      if (mounted) {
+        setState(() => _submitting = false);
+      }
     }
   }
 
   void _showError(String message) {
-    if (mounted)
+    if (mounted) {
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text(message)));
+    }
   }
 }

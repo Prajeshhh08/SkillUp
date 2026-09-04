@@ -131,3 +131,34 @@ class WorkerProfileUpdatePayload {
     return map;
   }
 }
+
+class WorkerMetrics {
+  const WorkerMetrics({
+    required this.acceptanceRate,
+    required this.completedJobs,
+    required this.totalEarnings,
+    required this.averageRating,
+  });
+
+  final double acceptanceRate;
+  final int completedJobs;
+  final double totalEarnings;
+  final double averageRating;
+
+  factory WorkerMetrics.fromJson(Map<String, dynamic> json) {
+    return WorkerMetrics(
+      acceptanceRate: (json['acceptance_rate'] as num?)?.toDouble() ?? 0.0,
+      completedJobs: (json['completed_jobs'] as num?)?.toInt() ?? 0,
+      totalEarnings: (json['total_earnings'] as num?)?.toDouble() ?? 0.0,
+      averageRating: (json['average_rating'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+
+  Map<String, dynamic> toJson() => {
+    'acceptance_rate': acceptanceRate,
+    'completed_jobs': completedJobs,
+    'total_earnings': totalEarnings,
+    'average_rating': averageRating,
+  };
+}
+

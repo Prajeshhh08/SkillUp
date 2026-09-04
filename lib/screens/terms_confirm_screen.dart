@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import '../services/api_client.dart';
+import '../services/auth_service.dart';
 import 'flow_widgets.dart';
 
 class TermsConfirmScreen extends StatefulWidget {
@@ -11,6 +13,7 @@ class TermsConfirmScreen extends StatefulWidget {
 
 class _TermsConfirmScreenState extends State<TermsConfirmScreen> {
   bool ok = false;
+  bool _submitting = false;
 
   @override
   Widget build(BuildContext c) => FlowScaffold(
@@ -35,8 +38,36 @@ class _TermsConfirmScreenState extends State<TermsConfirmScreen> {
           title: const Text('I confirm my agreement'),
         ),
         const Spacer(),
-        primaryAction('Confirm & Finish', () => c.go('/customer-home')),
+        primaryAction(
+          _submitting ? 'Saving...' : 'Confirm & Finish',
+          _submitting ? null : _confirm,
+        ),
       ],
     ),
   );
+
+  Future<void> _confirm() async {
+    if (!ok) {
+      _showError('Please confirm your agreement before continuing.');
+      return;
+    }
+
+    setState(() => _submitting = true);
+    try {
+      await AuthService.instance.acceptTerms();
+      if (!mounted) return;
+      final flow = GoRouterState.of(context).uri.queryParameters['flow'] ?? 'customer';
+      context.go(flow == 'worker' ? '/worker-form' : '/customer-home');
+    } on ApiException catch (error) {
+      _showError(error.message);
+    } finally {
+      if (mounted) setState(() => _submitting = false);
+    }
+  }
+
+  void _showError(String message) {
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+    }
+  }
 }

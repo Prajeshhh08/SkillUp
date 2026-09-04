@@ -123,6 +123,11 @@ class _RoleSelectionScreenState extends State<RoleSelectionScreen> {
                     ),
                     child: const Text('Continue'),
                   ),
+                  const SizedBox(height: 8),
+                  TextButton(
+                    onPressed: () => context.push('/login'),
+                    child: const Text('Already have an account? Sign in'),
+                  ),
                   const SizedBox(height: 10),
                   Text(
                     'You can always switch your role later in account settings.',
